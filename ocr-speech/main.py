@@ -20,7 +20,7 @@ def recognize_from_microphone():
     speech_config = speechsdk.SpeechConfig(subscription="0b3f3cff3bf54688b7c9dbee47aaed1c", region="southeastasia")
     speech_config.speech_recognition_language="en-US"
 
-    audio_config = speechsdk.audio.AudioConfig(filename="sample_sound.wav")
+    audio_config = speechsdk.audio.AudioConfig(filename="ocr-speech/sample_sound.wav")
     speech_recognizer = speechsdk.SpeechRecognizer(speech_config=speech_config, audio_config=audio_config)
 
     # print("Speak into your microphone.")
@@ -77,4 +77,6 @@ async def ocr():
                 ret += ' '.join(str(v) for v in line.bounding_box) + "\n\n"
 
     return ret
+
+    # uvicorn main:app --reload
 
