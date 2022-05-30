@@ -26,9 +26,9 @@ def get_all_videos(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Video).offset(skip).limit(limit).all()
 
 
-def create_video(db: Session, video: schemas.VideoBase, file: UploadFile):
+def create_video(db: Session, video: schemas.VideoBase, file: UploadFile, uuid:str):
     print("in create_video")
-    vdo = models.Video(uuid=video.uuid, VideoName=file.filename, LectureName=video.LectureName, LecturerID=video.LecturerID, StudentID=video.StudentID)
+    vdo = models.Video(uuid=uuid, VideoName=file.filename, LectureName=video.LectureName, LecturerID=video.LecturerID, StudentID=video.StudentID)
     db.add(vdo)
     db.commit()
     db.refresh(vdo)

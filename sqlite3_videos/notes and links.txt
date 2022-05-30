@@ -137,3 +137,7 @@ Maybe this will be useful
 https://stackoverflow.com/questions/41938718/how-to-download-files-using-axios
 https://www.codegrepper.com/code-examples/javascript/How+to+download+files+using+axios
 https://stackoverflow.com/questions/50694881/how-to-download-file-in-react-js
+
+
+- add attributes into database 
+- add transactional table that keeps OCR and speech recognition results

@@ -2,14 +2,12 @@ from typing_extensions import Self
 from sqlalchemy.dialects.postgresql import UUID
 
 from pydantic import BaseModel
-import uuid
 from fastapi import Depends, FastAPI, HTTPException, FastAPI, File, UploadFile
 from fastapi import FastAPI, File, Form, UploadFile
 
 
 #base class for creating and reading data (reduce code redundancy)
 class VideoBase(BaseModel):
-    uuid = str(uuid.uuid4())
     LectureName: str
     LecturerID: int
     StudentID: int
@@ -29,3 +27,5 @@ class VideoBase(BaseModel):
 class VideoReturn(VideoBase):
     uuid: str
     VideoName: str
+
+#https://fastapi.tiangolo.com/tutorial/sql-databases/ << check out this

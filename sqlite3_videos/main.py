@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, File, Form, UploadFile
 from schemas import VideoBase
 import uvicorn
+import uuid
 
 
 models.Base.metadata.create_all(bind=engine)
@@ -61,7 +62,7 @@ def read_videos_videoname(VideoName: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Video not found")
     return videos
 
-@app.get("/getvideos/{lecturename}", response_model=list[schemas.VideoReturn])
+@app.get("/getvideos_lecturename/{lecturename}", response_model=list[schemas.VideoReturn])
 def read_videos_lecturename(LectureName : str, db: Session = Depends(get_db)):
     print("in getvideos/{lecturename}")
     videos = crud.get_videos_by_LectureName(db, LectureName=LectureName)
@@ -96,12 +97,16 @@ def read_videos(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
 @app.post("/uploadvideo")
 async def create_file(file: UploadFile, video: schemas.VideoBase = Depends(VideoBase.send_form), db: Session = Depends(get_db)):
     print("in files2, create_file")
-    print("uuid: ", video.uuid)
-    db_vdo = crud.get_video_by_ID(db, uuid=video.uuid)
+    vuuid = str(uuid.uuid4())
+    print("uuid: ", vuuid)
+    db_vdo = crud.get_video_by_ID(db, uuid=vuuid)
     if db_vdo:
         raise HTTPException(status_code=400, detail="Video already exists in database!")
     print("about to input into database >> filename:", file.filename)
-    return crud.create_video(db=db, video=video, file=file)
+    with open(f'uploadedVideos/{vuuid}.mp4', 'wb') as uploadvideo:
+        content = await file.read()
+        uploadvideo.write(content)
+    return crud.create_video(db=db, video=video, file=file, uuid=vuuid)
 
 
 #------------------------------------------------------------------------------------------------------------------------------------------
