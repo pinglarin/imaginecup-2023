@@ -53,8 +53,8 @@ def read_video(uuid: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Video not found")
     return db_vdo
 
-@app.get("/getvideos/{videoname}", response_model=list[schemas.VideoReturn])
-def read_videos(VideoName: str, db: Session = Depends(get_db)):
+@app.get("/getvideos_videoname/{videoname}", response_model=list[schemas.VideoReturn])
+def read_videos_videoname(VideoName: str, db: Session = Depends(get_db)):
     print("in getvideos/{videoname}")
     videos = crud.get_videos_by_VideoName(db, VideoName=VideoName)
     if videos is None:
@@ -62,23 +62,23 @@ def read_videos(VideoName: str, db: Session = Depends(get_db)):
     return videos
 
 @app.get("/getvideos/{lecturename}", response_model=list[schemas.VideoReturn])
-def read_videos(LectureName : str, db: Session = Depends(get_db)):
+def read_videos_lecturename(LectureName : str, db: Session = Depends(get_db)):
     print("in getvideos/{lecturename}")
     videos = crud.get_videos_by_LectureName(db, LectureName=LectureName)
     if videos is None:
         raise HTTPException(status_code=404, detail="Video not found")
     return videos
 
-@app.get("/getvideos/{lecturerID}", response_model=list[schemas.VideoReturn])
-def read_videos(LecturerID: int, db: Session = Depends(get_db)):
+@app.get("/getvideos_lecturerID/{lecturerID}", response_model=list[schemas.VideoReturn])
+def read_videos_lecturerID(LecturerID: int, db: Session = Depends(get_db)):
     print("in getvideos/{lecturerID}")
     videos = crud.get_videos_by_LecturerID(db, LecturerID=LecturerID)
     if videos is None:
         raise HTTPException(status_code=404, detail="Video not found")
     return videos
 
-@app.get("/getvideos/{studentID}", response_model=list[schemas.VideoReturn])
-def read_videos(StudentID: int, db: Session = Depends(get_db)):
+@app.get("/getvideos_studentID/{studentID}", response_model=list[schemas.VideoReturn])
+def read_videos_studentID(StudentID: int, db: Session = Depends(get_db)):
     print("in getvideos/{studentID}")
     videos = crud.get_videos_by_StudentID(db, StudentID=StudentID)
     if videos is None:
