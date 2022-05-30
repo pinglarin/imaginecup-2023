@@ -1,0 +1,139 @@
+
+# use to run: python -m uvicorn main:app --reload
+# local host: http://127.0.0.1:8000/docs
+
+
+
+FOR video.py
+
+How to upload multimedia files to SQLite >> for video.py
+https://www.twilio.com/blog/intro-multimedia-file-upload-python-sqlite3-database
+
+video.db is changed to videoDatabase
+do we input all the videos in one go or do we input one at a time
+
+
+
+
+OLD VERSION NOT USED 
+connection = sqlite3.connect('videoDatabase.db')
+
+
+with open('schema.sql') as f:
+    connection.executescript(f.read())
+
+cur = connection.cursor()
+
+cur.execute("INSERT INTO video (video_name, file_blob) VALUES (?, ?)",
+            ('First Post', 'file_blob for the first post')
+            )
+
+cur.execute("INSERT INTO video (video_name, file_blob) VALUES (?, ?)",
+            ('Second Post', 'file_blob for the second post')
+            )
+
+connection.commit()
+connection.close()
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+FOR main.py
+https://fastapi.tiangolo.com/tutorial/query-params/
+
+C:\Users\Aekky>python --version
+Python 3.10.2
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+FOR database.py and overall database linking with SQLite
+https://fastapi.tiangolo.com/tutorial/sql-databases/
+
+
+TO BE USED LATER
+https://fastapi.tiangolo.com/tutorial/handling-errors/
+
+
+
+Don't use blob anymore >> use path of each video
+
+id INTEGER PRIMARY KEY AUTOINCREMENT, in schema >> change
+id >> uuid (String) how to do this. Check it out later
+https://vespa-mrs.github.io/vespa.io/development/project_dev/database/DatabaseUuidEfficiency.html
+https://docs.python.org/3/library/uuid.html << about UUID
+
+get(id)
+return videopath
+
+React File Upload
+React vdo streaming and FastAPI
+
+
+Maybe useful later
+https://fastapi.tiangolo.com/tutorial/request-files/
+https://stackoverflow.com/questions/19176024/how-to-escape-special-characters-in-building-a-json-string
+
+
+Joining FastAPI and React
+maybe I need CORS
+
+
+UploadFile
+has the following async methods. They all call the corresponding file methods underneath (using the internal SpooledTemporaryFile).
+
+write(data): Writes data (str or bytes) to the file.
+read(size): Reads size (int) bytes/characters of the file.
+>seek(offset): Goes to the byte position offset (int) in the file.>> this can be useful!!!!!!!!!!!!!!!!!!
+    E.g., await myfile.seek(0) would go to the start of the file.
+    This is especially useful if you run await myfile.read() once and then need to read the contents again.
+close(): Closes the file.
+
+
+https://stackoverflow.com/questions/63580229/how-to-save-uploadfile-in-fastapi << maybe useful later
+
+# Unused Example Code
+# @app.post("/users/{user_id}/items/", response_model=schemas.Item)
+# def create_item_for_user(
+#     user_id: int, item: schemas.ItemCreate, db: Session = Depends(get_db)
+# ):
+#     return crud.create_user_item(db=db, item=item, user_id=user_id)
+
+
+# @app.get("/items/", response_model=list[schemas.Item])
+# def read_items(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+#     items = crud.get_items(db, skip=skip, limit=limit)
+#     return items
+
+
+# from fastapi import FastAPI
+
+# app = FastAPI()
+
+    
+# @app.get("/video/{video_name}")
+# async def read_item(video_name: str):
+#     return {"video:": video_name}
+
+# 
+# 
+React Templates
+https://www.creative-tim.com/product/now-ui-kit-react
+
+Adapting our code to Templates
+(use about us page as template for upload file page)
+
+
+
+
+Steps of implementing our code with template
+Currently our web should have 4 pages: home, product (search), uploader page, and video player
+1. Uploader page
+    - put Drag_Uploader into about us page + adapted the template's form into our form
+2. Search Page (Author page)
+3. Search Result Page (Copy of Author page)
+
+
+Maybe this will be useful
+https://stackoverflow.com/questions/41938718/how-to-download-files-using-axios
+https://www.codegrepper.com/code-examples/javascript/How+to+download+files+using+axios
+https://stackoverflow.com/questions/50694881/how-to-download-file-in-react-js
