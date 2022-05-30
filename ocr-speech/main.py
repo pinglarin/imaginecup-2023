@@ -17,15 +17,28 @@ import cv2
 import io
 import numpy as np
 from starlette.responses import StreamingResponse
+from pydub import AudioSegment
 
 app = FastAPI()
 
+
 @app.get("/sampleSpeech")
 def recognize_from_microphone():
+
+    path = "sample_sound.mp3" # ocr-speech/
+    name, extension = os.path.splitext(path)
+    if (extension != '.wav'):
+        # sound = AudioSegment.from_mp3("/path/to/file.mp3")
+        # sound.export("/output/path/file.wav", format="wav")
+        raw_audio = AudioSegment.from_file(path, format="mp3")
+                                #    frame_rate=48000, channels=1, sample_width=2)
+        path = name + '_test' + '.wav'
+        raw_audio.export(path, format="wav")
+
     speech_config = speechsdk.SpeechConfig(subscription="0b3f3cff3bf54688b7c9dbee47aaed1c", region="southeastasia")
     speech_config.speech_recognition_language="en-US"
 
-    audio_config = speechsdk.audio.AudioConfig(filename="ocr-speech/sample_sound.wav")
+    audio_config = speechsdk.audio.AudioConfig(filename=path)
     speech_recognizer = speechsdk.SpeechRecognizer(speech_config=speech_config, audio_config=audio_config)
 
     # print("Speak into your microphone.")
@@ -83,16 +96,8 @@ async def frameOCR(frameNum):
     # res, im_png = cv2.imencode(".png", frameImg)
     # return StreamingResponse(io.BytesIO(im_png.tobytes()), media_type="image/png")
 
-@app.get("/testimg")
-async def testimg():
-    
-    frameImg=cv2.imread('testimg.png')
-    # cv2.imshow(frameImg)
-    res, im_png = cv2.imencode(".png", frameImg)
-    im_png.seek(0)
-    return StreamingResponse(io.BytesIO(im_png.tobytes()), media_type="image/png")
 
-@app.get("/localOCR")
+# @app.get("/localOCR")
 def localocr(img): # async
     subscription_key = "37cf6d8217354a25b5bad0cc9a738599"
     endpoint = "https://ocr-computer-vision-imaginecup-2023.cognitiveservices.azure.com/"
