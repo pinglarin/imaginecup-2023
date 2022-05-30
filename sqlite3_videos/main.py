@@ -97,7 +97,7 @@ def read_videos(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
 async def create_file(file: UploadFile, video: schemas.VideoBase = Depends(VideoBase.send_form), db: Session = Depends(get_db)):
     print("in files2, create_file")
     print("uuid: ", video.uuid)
-    db_vdo = crud.get_video(db, uuid=video.uuid)
+    db_vdo = crud.get_video_by_ID(db, uuid=video.uuid)
     if db_vdo:
         raise HTTPException(status_code=400, detail="Video already exists in database!")
     print("about to input into database >> filename:", file.filename)
