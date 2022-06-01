@@ -4,9 +4,11 @@ import crud, models, schemas
 from database import SessionLocal, engine
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, File, Form, UploadFile
-from schemas import VideoBase
+from fastapi.encoders import jsonable_encoder
+from schemas import VideoBase, VideoUpdate
 import uvicorn
 import uuid
+from typing import Optional, Type
 
 
 models.Base.metadata.create_all(bind=engine)
@@ -95,8 +97,7 @@ def read_videos(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     
        
 @app.post("/uploadvideo")
-async def create_file(file: UploadFile, video: schemas.VideoBase = Depends(VideoBase.send_form), db: Session = Depends(get_db)):
-    print("in files2, create_file")
+async def upload_video(file: UploadFile, video: schemas.VideoBase = Depends(VideoBase.send_form), db: Session = Depends(get_db)):
     vuuid = str(uuid.uuid4())
     print("uuid: ", vuuid)
     db_vdo = crud.get_video_by_ID(db, uuid=vuuid)
@@ -106,7 +107,66 @@ async def create_file(file: UploadFile, video: schemas.VideoBase = Depends(Video
     with open(f'uploadedVideos/{vuuid}.mp4', 'wb') as uploadvideo:
         content = await file.read()
         uploadvideo.write(content)
-    return crud.create_video(db=db, video=video, file=file, uuid=vuuid)
+    crud.create_video(db=db, video=video, file=file, uuid=vuuid)
+    return "Success"
+# To be done: if function returns success, the user is notified of it, and the opposite goes for failed attempt.
+
+@app.patch("/updatevideo/{uuid}", response_model=schemas.VideoReturn)
+def update_hero(vuuid: str, video: schemas.VideoUpdate = Depends(VideoUpdate.as_form), db: Session = Depends(get_db)):
+    db_vdo = crud.get_video_by_ID(db, uuid=vuuid)
+    if db_vdo is None:
+        raise HTTPException(status_code=404, detail="Video not found")
+    vdo_data = video.dict(exclude_unset=True)
+    print(vdo_data)
+    for key, value in vdo_data.items():
+        setattr(db_vdo, key, value)
+    db.add(db_vdo)
+    db.commit()
+    db.refresh(db_vdo)
+    return db_vdo
+
+
+
+#ORIGINAL!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# @app.patch("/updatevideo/{id}", response_model=schemas.VideoReturn) #not done
+# async def update_video(uuid: str, video: schemas.VideoUpdate = Depends(VideoUpdate.as_form), db: Session = Depends(get_db)):
+#     db_vdo = read_video(uuid, db)
+#     if db_vdo is None:
+#         raise HTTPException(status_code=404, detail="Video not found")
+#     db.add(db_vdo)
+#     db.commit()
+#     db.refresh(db_vdo)
+#     print("Video is successfully updated")
+#     return db_vdo
+
+
+# async def update_video(uuid: str, video: schemas.VideoUpdate = Depends(VideoUpdate.as_form), db: Session = Depends(get_db)):
+#     db_vdo = read_video(uuid, db)
+#     if db_vdo is None:
+#         raise HTTPException(status_code=404, detail="Video not found")
+
+#     updated_data = video.dict(exclude_unset=True)
+#     for key, value in updated_data.items():
+#         print("key", key)
+#         print("value", value)
+#         setattr(db_vdo, key, value)
+#     db.add(db_vdo)
+#     db.commit()
+#     db.refresh(db_vdo)
+#     print("Video is successfully updated")
+#     return db_vdo
+
+
+@app.delete("/deletevideo/{id}")
+async def delete_video(uuid: str, db: Session = Depends(get_db)):
+    db_vdo = crud.get_video_by_ID(db, uuid=uuid)
+    if db_vdo is None:
+        raise HTTPException(status_code=404, detail="Video not found")
+    db.delete(db_vdo)
+    db.commit()
+    print("Video is successfully deleted")
+    return "success"
+
 
 
 #------------------------------------------------------------------------------------------------------------------------------------------

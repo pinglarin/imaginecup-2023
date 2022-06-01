@@ -8,13 +8,13 @@ CREATE TABLE video (
     StudentID INT
 );
 
--- created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+DROP TABLE IF EXISTS videoInfo;
 
--- student ID
--- lecturer name
--- Lecture name
+CREATE TABLE videoInfo (
+    uuid STR PRIMARY KEY,
+    info STR NOT NULL,
 
-
-
--- update schema of database
--- test the new functions
+    CONSTRAINT fk_uuid
+        FOREIGN KEY (uuid)
+        REFERENCES video (uuid)
+);

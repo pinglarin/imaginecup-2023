@@ -33,10 +33,16 @@ def create_video(db: Session, video: schemas.VideoBase, file: UploadFile, uuid:s
     db.commit()
     db.refresh(vdo)
     print("file is inside database ", file.filename)
-    print("success")
+    print("Video is successfully uploaded")
     return vdo
   
+#def update_video
 
+
+
+
+
+   
 # def get_video(db: Session, uuid: str):
 #     return db.query(models.Video).filter(models.Video.uuid == uuid).first()
 
