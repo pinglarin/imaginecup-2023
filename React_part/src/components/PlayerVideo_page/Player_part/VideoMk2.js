@@ -1,19 +1,21 @@
 import React, { useState } from "react";
+
 import { Player } from "./Player";
 import "video.js/dist/video-js.min.css";
+
 // My add function
-import Clip from "./OOP P01 CanteenICT Get-Started Session (Bi-Lingual)-20210310 0659-1.mp4";
+import Clip from "./uploadedVideos/bd13c986-f8e9-480f-80ec-9b284dfda3de.mp4"
 
 export default function VideoMk2()  
 {
-  const Myplayer = {};
-  const videoSrc = Clip;
-  
+  const Myplayer = {};  
   const [state, setstate] = useState({
-    video: {
-      src: "http://vjs.zencdn.net/v/oceans.mp4",
-      //src: require("./OOP P01 CanteenICT Get-Started Session (Bi-Lingual)-20210310 0659-1.mp4"),  
-      //src: require(videoSrc),            
+    video: {     
+      sources: [{
+        //src: "http://vjs.zencdn.net/v/oceans.mp4",      
+        src: Clip,
+        type: 'video/mp4'
+      }],
       poster:
       "https://cdn.discordapp.com/attachments/595430234736689173/923864093511798814/167a9d14e5017ffa2d39ac5567f37d30-db6wtbu.jpg"
     }
@@ -53,7 +55,7 @@ export default function VideoMk2()
     <div className="App">
       <Player
         controls={true}
-        src={state.video.src}
+        src={state.video.sources}
         poster={state.video.poster}
         width="650"
         height="420"
@@ -63,8 +65,8 @@ export default function VideoMk2()
         // onTimeUpdate={onVideoTimeUpdate}
         onSeeking={onVideoSeeking}
         onSeeked={onVideoSeeked}
-        onEnd={onVideoEnd}        
-      />      
+        onEnd={onVideoEnd}
+      />     
     </div>    
   );
 };
