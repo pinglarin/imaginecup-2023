@@ -115,7 +115,7 @@ async def upload_video(file: UploadFile, video: schemas.VideoBase = Depends(Vide
 def update_hero(vuuid: str, video: schemas.VideoUpdate = Depends(VideoUpdate.as_form), db: Session = Depends(get_db)):
     db_vdo = crud.get_video_by_ID(db, uuid=vuuid)
     if db_vdo is None:
-        raise HTTPException(status_code=404, detail="Video not found")
+        raise HTTPException(status_code=404, detail="Video not found") 
     vdo_data = video.dict(exclude_unset=True)
     print(vdo_data)
     for key, value in vdo_data.items():
@@ -124,8 +124,6 @@ def update_hero(vuuid: str, video: schemas.VideoUpdate = Depends(VideoUpdate.as_
     db.commit()
     db.refresh(db_vdo)
     return db_vdo
-
-
 
 #ORIGINAL!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # @app.patch("/updatevideo/{id}", response_model=schemas.VideoReturn) #not done

@@ -3,6 +3,12 @@
 # local host: http://127.0.0.1:8000/docs
 
 ----------------------------------------------------------------------------------------------------------------------------------
+IMPORTANT LINKS
+>>>>>FOR database.py and overall database linking with SQLite> https://fastapi.tiangolo.com/tutorial/sql-databases/
+>>>>>Form: https://stackoverflow.com/questions/60127234/how-to-use-a-pydantic-model-with-form-data-in-fastapi    
+----------------------------------------------------------------------------------------------------------------------------------
+
+
 -UNUSED- >> concerns database input using BLOB
 How to upload multimedia files to SQLite >> for video.py
 https://www.twilio.com/blog/intro-multimedia-file-upload-python-sqlite3-database
@@ -28,9 +34,6 @@ connection.commit()
 connection.close()
 
 -------------------------------------------------------------------------------------------------------------------------------------------------
-
-FOR database.py and overall database linking with SQLite
-https://fastapi.tiangolo.com/tutorial/sql-databases/
 
 
 TO BE USED LATER

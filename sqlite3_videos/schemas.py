@@ -64,12 +64,23 @@ def as_form(cls: Type[BaseModel]):
     print("return cls")
     return cls
     
+    
 @as_form
 class VideoUpdate(BaseModel):
     VideoName: Optional[str] = None
     LectureName: Optional[str] = None
     LecturerID: Optional[int] = None
     StudentID: Optional[int] = None
+
+    @classmethod
+    def as_form(
+            cls,
+            VideoName: Optional[str] = Form("VideoReturn.return_VideoName"), #VideoName: Optional[str] = Form(VideoReturn.return_VideoName),
+            LectureName: Optional[str] = Form("smth"),
+            LecturerID: Optional[int] = Form(1),
+            StudentID: Optional[int] = Form(1)
+        ) :
+        return cls(VideoName=VideoName, LectureName=LectureName, LecturerID=LecturerID, StudentID=StudentID)
 
 
     # @classmethod
