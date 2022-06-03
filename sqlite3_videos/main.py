@@ -104,7 +104,7 @@ async def upload_video(file: UploadFile, video: schemas.VideoBase = Depends(Vide
     if db_vdo:
         raise HTTPException(status_code=400, detail="Video already exists in database!")
     print("about to input into database >> filename:", file.filename)
-    with open(f'uploadedVideos/{vuuid}.mp4', 'wb') as uploadvideo:
+    with open(f'../React_part/src/components/PlayerVideo_page/Player_part/uploadedVideos/{vuuid}.mp4', 'wb') as uploadvideo:
         content = await file.read()
         uploadvideo.write(content)
     crud.create_video(db=db, video=video, file=file, uuid=vuuid)

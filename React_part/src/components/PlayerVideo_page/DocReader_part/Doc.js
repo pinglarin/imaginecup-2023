@@ -27,10 +27,10 @@ export default function SinglePage(props) {
   }
 
   //For Change Auto in page
-  function SetpagebyBookmark ({ numPages }) {
-    setNumPages(numPages);
-    setPageNumber(numPages);
-  }
+  // function SetpagebyBookmark ({ numPages }) {
+  //   setNumPages(numPages);
+  //   setPageNumber(numPages);
+  // }
 
   function changePage(offset) {
     setPageNumber(prevPageNumber => prevPageNumber + offset);
