@@ -13,9 +13,12 @@ import MKInput from "components/MKInput";
 import MKButton from "components/MKButton";
 import MKTypography from "components/MKTypography";
 
+<<<<<<< HEAD
 // Toasts
 // import Toast from "react-bootstrap/Toast";
 
+=======
+>>>>>>> 9e6889e8b646be5045103991a6f68b83f7d7bd45
 function DragUploader() {
   // removed props because of 'props' is defined but never used
 
@@ -106,7 +109,11 @@ function DragUploader() {
                   />
                 </Grid>
               </Grid>
+<<<<<<< HEAD
               <Grid container item justifyContent="center" xs={12} my={2}>
+=======
+              <Grid container item justifyContent="center" xs={12} my={5}>
+>>>>>>> 9e6889e8b646be5045103991a6f68b83f7d7bd45
                 <MKButton
                   onClick={Uploadvideo}
                   type="submit"

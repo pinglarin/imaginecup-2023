@@ -2,5 +2,8 @@ __pycache__
 node_modules
 uploadedVideos
 sqlite3_videos/videoDatabase.db
+<<<<<<< HEAD
 /React_part/src/components/PlayerVideo_page/Player_part/Clone.mp4
 /React Template/src/pages/LandingPages/UploadPage/PlayerVideo_page/Player_part/VideoExample/OOP P01 CanteenICT Get-Started Session (Bi-Lingual)-20210310 0659-1.mp4
+=======
+>>>>>>> 9e6889e8b646be5045103991a6f68b83f7d7bd45

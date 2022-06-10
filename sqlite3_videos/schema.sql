@@ -26,9 +26,14 @@ DROP TABLE IF EXISTS frame;
 
 CREATE TABLE frame ( -- should there be metadata?
     frameID TEXT PRIMARY KEY,
+<<<<<<< HEAD
     uuid TEXT
     sentences TEXT
     -- path to JSON
+=======
+    uuid TEXT PRIMARY KEY
+    sentences TEXT
+>>>>>>> 9e6889e8b646be5045103991a6f68b83f7d7bd45
     
     CONTEXTAINT fk_OCR_uuid
         FOREIGN KEY (uuid)
@@ -36,6 +41,10 @@ CREATE TABLE frame ( -- should there be metadata?
 );
 
 
+<<<<<<< HEAD
 -- table speech recog << to be done
 
 -- to be researched: keeping JSON results in DB
+=======
+-- table speech recog << to be done
+>>>>>>> 9e6889e8b646be5045103991a6f68b83f7d7bd45

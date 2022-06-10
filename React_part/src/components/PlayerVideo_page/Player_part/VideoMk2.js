@@ -5,10 +5,14 @@ import "video.js/dist/video-js.min.css";
 
 // My add function
 <<<<<<< HEAD
+<<<<<<< HEAD
 import Clip from "../../../../../sqlite3_videos/uploadedVideos/5d10ddea-111b-4fe7-b043-8777c6132014.mp4"
 =======
 import Clip from "./uploadedVideos/bd13c986-f8e9-480f-80ec-9b284dfda3de.mp4"
 >>>>>>> parent of 17bf6da (Update React Part)
+=======
+import Clip from "./uploadedVideos/bd13c986-f8e9-480f-80ec-9b284dfda3de.mp4"
+>>>>>>> 9e6889e8b646be5045103991a6f68b83f7d7bd45
 
 export default function VideoMk2()  
 {
