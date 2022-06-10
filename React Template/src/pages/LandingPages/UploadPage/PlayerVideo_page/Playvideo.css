@@ -1,0 +1,16 @@
+.PlayerVideo_page {
+    text-align: center;
+    Align-Items: center;    
+}
+
+.PlayerVideo{
+    Display: flex;
+    Align-Items: center;
+    Justify-Content: center;
+}
+
+.Doc {
+    Display: flex;
+    Align-Items: center;
+    Justify-Content: center;
+}

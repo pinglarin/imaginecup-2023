@@ -1,20 +1,41 @@
 DROP TABLE IF EXISTS video;
 
 CREATE TABLE video (
-    uuid STR PRIMARY KEY,
-    VideoName STR NOT NULL,
-    LectureName STR NOT NULL,
+    uuid TEXT PRIMARY KEY,
+    VideoName TEXT NOT NULL,
+    LectureName TEXT NOT NULL,
     LecturerID INT,
     StudentID INT
 );
 
--- created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+DROP TABLE IF EXISTS videoInfo; --delete later
 
--- student ID
--- lecturer name
--- Lecture name
+DROP TABLE IF EXISTS OCR;
+
+CREATE TABLE OCR (
+    uuid TEXT PRIMARY KEY,
+    info TEXT NOT NULL,
+    numFrames INT
+
+    CONTEXTAINT fk_video_uuid
+        FOREIGN KEY (uuid)
+        REFERENCES video (uuid)
+);
+
+DROP TABLE IF EXISTS frame;
+
+CREATE TABLE frame ( -- should there be metadata?
+    frameID TEXT PRIMARY KEY,
+    uuid TEXT
+    sentences TEXT
+    -- path to JSON
+    
+    CONTEXTAINT fk_OCR_uuid
+        FOREIGN KEY (uuid)
+        REFERENCES OCR (uuid)
+);
 
 
+-- table speech recog << to be done
 
--- update schema of database
--- test the new functions
+-- to be researched: keeping JSON results in DB
