@@ -18,11 +18,8 @@ def get_db():
 
 #base class for creating and reading data (reduce code redundancy)
 class VideoBase(BaseModel):
-<<<<<<< HEAD
-    uuid: str
-    VideoName: str
-=======
->>>>>>> 9e6889e8b646be5045103991a6f68b83f7d7bd45
+    # uuid: str
+    # VideoName: str
     LectureName: str
     LecturerID: int
     StudentID: int
@@ -38,16 +35,13 @@ class VideoBase(BaseModel):
     ) -> Self:
         return cls(LectureName=LectureName, LecturerID=LecturerID, StudentID=StudentID)
 
-
-<<<<<<< HEAD
 # class VideoReturn(VideoBase):
 #     uuid: str
 #     VideoName: str
-=======
+
 class VideoReturn(VideoBase):
     uuid: str
     VideoName: str
->>>>>>> 9e6889e8b646be5045103991a6f68b83f7d7bd45
 
 
 def as_form(cls: Type[BaseModel]):

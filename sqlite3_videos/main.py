@@ -9,6 +9,9 @@ from schemas import VideoBase, VideoUpdate
 import uvicorn
 import uuid
 from typing import Optional, Type
+from databases import Database
+
+from fastapi.responses import StreamingResponse
 
 from pathlib import Path
 from fastapi import FastAPI
@@ -49,6 +52,16 @@ def get_db():
     finally:
         db.close()
 
+database = Database("sqlite:///videoDatabase.db")
+
+@app.on_event("startup")
+async def database_connect():
+    await database.connect()
+
+
+@app.on_event("shutdown")
+async def database_disconnect():
+    await database.disconnect()
 
 @app.get("/")
 async def root():
@@ -62,11 +75,7 @@ def read_video(uuid: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Video not found")
     return db_vdo
 
-<<<<<<< HEAD
 @app.get("/getvideos_videoname/{videoname}")
-=======
-@app.get("/getvideos_videoname/{videoname}", response_model=list[schemas.VideoReturn])
->>>>>>> 9e6889e8b646be5045103991a6f68b83f7d7bd45
 def read_videos_videoname(VideoName: str, db: Session = Depends(get_db)):
     print("in getvideos/{videoname}")
     videos = crud.get_videos_by_VideoName(db, VideoName=VideoName)
@@ -74,11 +83,7 @@ def read_videos_videoname(VideoName: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Video not found")
     return videos
 
-<<<<<<< HEAD
 @app.get("/getvideos_lecturename/{lecturename}")
-=======
-@app.get("/getvideos_lecturename/{lecturename}", response_model=list[schemas.VideoReturn])
->>>>>>> 9e6889e8b646be5045103991a6f68b83f7d7bd45
 def read_videos_lecturename(LectureName : str, db: Session = Depends(get_db)):
     print("in getvideos/{lecturename}")
     videos = crud.get_videos_by_LectureName(db, LectureName=LectureName)
@@ -86,11 +91,7 @@ def read_videos_lecturename(LectureName : str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Video not found")
     return videos
 
-<<<<<<< HEAD
 @app.get("/getvideos_lecturerID/{lecturerID}")
-=======
-@app.get("/getvideos_lecturerID/{lecturerID}", response_model=list[schemas.VideoReturn])
->>>>>>> 9e6889e8b646be5045103991a6f68b83f7d7bd45
 def read_videos_lecturerID(LecturerID: int, db: Session = Depends(get_db)):
     print("in getvideos/{lecturerID}")
     videos = crud.get_videos_by_LecturerID(db, LecturerID=LecturerID)
@@ -98,11 +99,7 @@ def read_videos_lecturerID(LecturerID: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Video not found")
     return videos
 
-<<<<<<< HEAD
 @app.get("/getvideos_studentID/{studentID}")
-=======
-@app.get("/getvideos_studentID/{studentID}", response_model=list[schemas.VideoReturn])
->>>>>>> 9e6889e8b646be5045103991a6f68b83f7d7bd45
 def read_videos_studentID(StudentID: int, db: Session = Depends(get_db)):
     print("in getvideos/{studentID}")
     videos = crud.get_videos_by_StudentID(db, StudentID=StudentID)
@@ -117,27 +114,17 @@ def read_videos(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     videos = crud.get_all_videos(db, skip=skip, limit=limit)
     return videos
     
-       
+@app.post("/getpath")
+async def fetch_data(uuid: str):
+    print(uuid)
+    vuuid = f'"{uuid}"'
+    print(vuuid)
+    query = "SELECT VideoPath FROM video WHERE uuid={}".format(str(vuuid))
+    results = database.fetch_all(query=query)
+    return await results
+
 @app.post("/uploadvideo")
 async def upload_video(file: UploadFile, video: schemas.VideoBase = Depends(VideoBase.send_form), db: Session = Depends(get_db)):
-<<<<<<< HEAD
-    video.uuid = str(uuid.uuid4())
-    print("uuid: ", video.uuid)
-    db_vdo = crud.get_video_by_ID(db, uuid=video.uuid)
-    if db_vdo:
-        raise HTTPException(status_code=400, detail="Video already exists in database!")
-    print("about to input into database >> filename:", file.filename)
-    with open(f'../React_part/src/components/PlayerVideo_page/Player_part/uploadedVideos/{video.uuid}.mp4', 'wb') as uploadvideo:
-        content = await file.read()
-        uploadvideo.write(content)
-    crud.create_video(db=db, video=video, file=file, uuid=video.uuid)
-    return "Success"
-# To be done: if function returns success, the user is notified of it, and the opposite goes for failed attempt.
-
-@app.patch("/updatevideo/{uuid}")
-def update_hero(video: schemas.VideoUpdate = Depends(VideoBase), db: Session = Depends(get_db)):
-    db_vdo = crud.get_video_by_ID(db, uuid=video.uuid)
-=======
     vuuid = str(uuid.uuid4())
     print("uuid: ", vuuid)
     db_vdo = crud.get_video_by_ID(db, uuid=vuuid)
@@ -147,14 +134,15 @@ def update_hero(video: schemas.VideoUpdate = Depends(VideoBase), db: Session = D
     with open(f'../React_part/src/components/PlayerVideo_page/Player_part/uploadedVideos/{vuuid}.mp4', 'wb') as uploadvideo:
         content = await file.read()
         uploadvideo.write(content)
-    crud.create_video(db=db, video=video, file=file, uuid=vuuid)
+        # VideoPath = f'C:/Users/Aekky/OneDrive - Mahidol University/Desktop/VS Code work/imaginecup-2023/React_part/src/components/PlayerVideo_page/Player_part/uploadedVideos/{vuuid}.mp4'
+        VideoPath = f'React_part/src/components/PlayerVideo_page/Player_part/uploadedVideos/{vuuid}.mp4' # is this type of path correct??
+    crud.create_video(db=db, video=video, file=file, uuid=vuuid, path = VideoPath)
     return "Success"
 # To be done: if function returns success, the user is notified of it, and the opposite goes for failed attempt.
 
-@app.patch("/updatevideo/{uuid}", response_model=schemas.VideoReturn)
-def update_hero(vuuid: str, video: schemas.VideoUpdate = Depends(VideoUpdate.as_form), db: Session = Depends(get_db)):
-    db_vdo = crud.get_video_by_ID(db, uuid=vuuid)
->>>>>>> 9e6889e8b646be5045103991a6f68b83f7d7bd45
+@app.patch("/updatevideo/{uuid}")
+def update_hero(video: schemas.VideoUpdate = Depends(VideoBase), db: Session = Depends(get_db)):
+    db_vdo = crud.get_video_by_ID(db, uuid=video.uuid)
     if db_vdo is None:
         raise HTTPException(status_code=404, detail="Video not found") 
     vdo_data = video.dict(exclude_unset=True)
@@ -167,7 +155,6 @@ def update_hero(vuuid: str, video: schemas.VideoUpdate = Depends(VideoUpdate.as_
     return db_vdo
 
 
-<<<<<<< HEAD
 # templates = Jinja2Templates(directory="templates")
 # CHUNK_SIZE = 1024*1024
 # video_path = Path("videos/comVidCutMP4.mp4")
@@ -187,27 +174,6 @@ def update_hero(vuuid: str, video: schemas.VideoUpdate = Depends(VideoUpdate.as_
 #             'Accept-Ranges': 'bytes'
 #         }
 #         return Response(data, status_code=206, headers=headers, media_type="comVidCut/mp4")
-=======
-templates = Jinja2Templates(directory="templates")
-CHUNK_SIZE = 1024*1024
-video_path = Path("videos/comVidCutMP4.mp4")
-
-
-@app.get("/streamvideo")
-async def video_endpoint(range: str = Header(None)):
-    start, end = range.replace("bytes=", "").split("-")
-    start = int(start)
-    end = int(end) if end else start + CHUNK_SIZE
-    with open(video_path, "rb") as video:
-        video.seek(start)
-        data = video.read(end - start)
-        filesize = str(video_path.stat().st_size)
-        headers = {
-            'Content-Range': f'bytes {str(start)}-{str(end)}/{filesize}',
-            'Accept-Ranges': 'bytes'
-        }
-        return Response(data, status_code=206, headers=headers, media_type="comVidCut/mp4")
->>>>>>> 9e6889e8b646be5045103991a6f68b83f7d7bd45
 
 #ORIGINAL!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # @app.patch("/updatevideo/{id}", response_model=schemas.VideoReturn) #not done
@@ -248,6 +214,14 @@ async def delete_video(uuid: str, db: Session = Depends(get_db)):
     db.commit()
     print("Video is successfully deleted")
     return "success"
+
+
+@app.get("/vid")
+def iterfile():  # 
+    with open(r"comvideos\comVidCutMP4.mp4", mode="rb") as file_like:  # 
+        yield from file_like  # 
+
+    return StreamingResponse(iterfile(), media_type="video/mp4")
 
 
 

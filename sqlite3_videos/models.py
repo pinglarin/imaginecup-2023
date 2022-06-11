@@ -9,6 +9,7 @@ class Video(Base):
 
     uuid = Column(String, name="uuid", primary_key=True, default=str(uuid.uuid4()))
     VideoName = Column(String, nullable=False) #file.filename
+    VideoPath = Column(String, nullable=False)
     LectureName = Column(String, nullable=False)
     LecturerID = Column(Integer)
     StudentID = Column(Integer)
