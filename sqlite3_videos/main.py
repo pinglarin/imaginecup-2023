@@ -114,7 +114,7 @@ def read_videos(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     videos = crud.get_all_videos(db, skip=skip, limit=limit)
     return videos
     
-@app.post("/getpath")
+@app.get("/getpath")
 async def fetch_data(uuid: str):
     print(uuid)
     vuuid = f'"{uuid}"'
@@ -140,19 +140,27 @@ async def upload_video(file: UploadFile, video: schemas.VideoBase = Depends(Vide
     return "Success"
 # To be done: if function returns success, the user is notified of it, and the opposite goes for failed attempt.
 
-@app.patch("/updatevideo/{uuid}")
-def update_hero(video: schemas.VideoUpdate = Depends(VideoBase), db: Session = Depends(get_db)):
-    db_vdo = crud.get_video_by_ID(db, uuid=video.uuid)
-    if db_vdo is None:
-        raise HTTPException(status_code=404, detail="Video not found") 
-    vdo_data = video.dict(exclude_unset=True)
-    print(vdo_data)
-    for key, value in vdo_data.items():
-        setattr(db_vdo, key, value)
-    db.add(db_vdo)
-    db.commit()
-    db.refresh(db_vdo)
-    return db_vdo
+# @app.patch("/updatevideo/{uuid}")
+# def update_hero(video: schemas.VideoUpdate = Depends(VideoBase), db: Session = Depends(get_db)):
+#     db_vdo = crud.get_video_by_ID(db, uuid=video.uuid)
+#     if db_vdo is None:
+#         raise HTTPException(status_code=404, detail="Video not found") 
+#     vdo_data = video.dict(exclude_unset=True)
+#     print(vdo_data)
+#     for key, value in vdo_data.items():
+#         setattr(db_vdo, key, value)
+#     db.add(db_vdo)
+#     db.commit()
+#     db.refresh(db_vdo)
+#     return db_vdo
+
+@app.put("/updatevideo/{uuid}")
+async def update_item(vuuid: str, video: schemas.VideoBase = Depends(VideoBase.send_form), db: Session = Depends(get_db)):
+    db_vdo = db.get(models.Video)
+    update_item_encoded = jsonable_encoder(video)
+    print(update_item_encoded)
+    #vid = update_item_encoded
+    return "good"
 
 
 # templates = Jinja2Templates(directory="templates")

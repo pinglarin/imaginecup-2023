@@ -47,12 +47,9 @@ import AboutUs from "layouts/pages/landing-pages/about-us";
 import ContactUs from "layouts/pages/landing-pages/contact-us";
 import Author from "layouts/pages/landing-pages/author";
 import SignIn from "layouts/pages/authentication/sign-in";
-<<<<<<< HEAD
 
 // Dragon's Upload page
 import Upload from "layouts/pages/landing-pages/UploadPage";
-=======
->>>>>>> parent of 17bf6da (Update React Part)
 
 // Sections
 import PageHeaders from "layouts/sections/page-sections/page-headers";
@@ -99,14 +96,11 @@ const routes = [
             route: "/pages/landing-pages/author",
             component: <Author />,
           },
-<<<<<<< HEAD
           {
             name: "Upload",
             route: "/pages/landing-pages/UploadPage",
             component: <Upload />,
           },
-=======
->>>>>>> parent of 17bf6da (Update React Part)
         ],
       },
       {

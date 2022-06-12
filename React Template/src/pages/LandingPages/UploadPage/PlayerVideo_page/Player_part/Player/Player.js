@@ -131,7 +131,8 @@ const Player = (props) => {
       markerTip: {
         display: true,
         html(marker) {
-          return <EditableMarkers text={marker.text} />;
+          const { text } = marker;
+          return <EditableMarkers text={text} />;
         },
       },
       breakOverlay: {
@@ -151,7 +152,6 @@ const Player = (props) => {
   }, []);
 
   Player.propTypes = {
-    p: PropTypes.object,
     src: PropTypes.string,
     poster: PropTypes.string,
     // controls: PropTypes.bool,
@@ -175,7 +175,6 @@ const Player = (props) => {
   };
 
   Player.defaultProps = {
-    p: {},
     src: "",
     poster: "",
     // controls: true,
@@ -196,18 +195,18 @@ const Player = (props) => {
     // onEnd: () => {},
   };
 
+  const { hideControls, src, bigPlayButtonCentered, className } = props;
   useEffect(() => {
-    setControlsVisibility(player, props.hideControls);
-    const { p } = props;
-    initPlayer(p);
-  }, [p.src]);
+    setControlsVisibility(player, hideControls);
+    initPlayer(props);
+  }, [src]);
 
   return (
     // eslint-disable-next-line jsx-a11y/media-has-caption
     <video
       id={playerId}
-      className={`video-js ${props.bigPlayButtonCentered ? "vjs-big-play-centered" : ""}
-        ${props.className}
+      className={`video-js ${bigPlayButtonCentered ? "vjs-big-play-centered" : ""}
+        ${className}
       `}
     />
   );
