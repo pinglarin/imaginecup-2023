@@ -1,5 +1,7 @@
 from genericpath import exists
 from fastapi import FastAPI
+from fastapi import Response
+import moviepy.editor as mp
 
 from azure.cognitiveservices.vision.computervision import ComputerVisionClient
 from azure.cognitiveservices.vision.computervision.models import OperationStatusCodes
@@ -18,6 +20,9 @@ import io
 import numpy as np
 from starlette.responses import StreamingResponse
 from pydub import AudioSegment
+import json
+import subprocess
+
 
 app = FastAPI()
 
@@ -25,15 +30,29 @@ app = FastAPI()
 @app.get("/sampleSpeech")
 def recognize_from_microphone():
 
-    path = "sample_sound.mp3" # ocr-speech/
+    # path = "media_files/comVidCutMP3.mp3" # ocr-speech/
+    path = "media_files/comVidCutMP4_trim.mp4" # ocr-speech/
+    # path = "sample_sound.mp3"
     name, extension = os.path.splitext(path)
     if (extension != '.wav'):
+        # command = "ffmpeg -i " + path + " -ab 160k -ac 2 -ar 44100 -vn " + name + '_wav' + '.wav'
+        # subprocess.call(command, shell=True)
+
+        clip = mp.VideoFileClip(path) #.subclip(0,20)
+        temppath = "tempaudio.mp3"
+        clip.audio.write_audiofile(temppath)
+
+        newpath = name + '_wav' + '.wav'
+        os.system("mpg123 -w " + newpath + " " + temppath)
+
         # sound = AudioSegment.from_mp3("/path/to/file.mp3")
         # sound.export("/output/path/file.wav", format="wav")
-        raw_audio = AudioSegment.from_file(path, format="mp3")
-                                #    frame_rate=48000, channels=1, sample_width=2)
-        path = name + '_test' + '.wav'
-        raw_audio.export(path, format="wav")
+        # raw_audio = AudioSegment.from_file(path, format="mp3")
+        # path = name + '_wav' + '.wav'
+        # raw_audio.export(path, format="wav")
+        print("convert to wav")
+
+    
 
     speech_config = speechsdk.SpeechConfig(subscription="0b3f3cff3bf54688b7c9dbee47aaed1c", region="southeastasia")
     speech_config.speech_recognition_language="en-US"
@@ -41,21 +60,49 @@ def recognize_from_microphone():
     audio_config = speechsdk.audio.AudioConfig(filename=path)
     speech_recognizer = speechsdk.SpeechRecognizer(speech_config=speech_config, audio_config=audio_config)
 
-    # print("Speak into your microphone.")
-    speech_recognition_result = speech_recognizer.recognize_once_async().get()
+    done = False
     ret = ""
-    if speech_recognition_result.reason == speechsdk.ResultReason.RecognizedSpeech:
-        ret += "Recognized: {}".format(speech_recognition_result.text) + "\n\n"
-    elif speech_recognition_result.reason == speechsdk.ResultReason.NoMatch:
-        ret += "No speech could be recognized: {}".format(speech_recognition_result.no_match_details) + "\n\n"
-    elif speech_recognition_result.reason == speechsdk.ResultReason.Canceled:
-        cancellation_details = speech_recognition_result.cancellation_details
-        ret += "Speech Recognition canceled: {}".format(cancellation_details.reason) + "\n\n"
-        if cancellation_details.reason == speechsdk.CancellationReason.Error:
-            ret += "Error details: {}".format(cancellation_details.error_details) + "\n\n"
-            ret += "Did you set the speech resource key and region values?" + "\n\n"
+    def stop_cb(evt):
+        """callback that signals to stop continuous recognition upon receiving an event `evt`"""
+        ret += 'CLOSING on {}'.format(evt) + "\n"
+        nonlocal done
+        done = True
+
+    def retRecognized(text, evt):
+        ret += text + ': {}'.format(evt) + "\n"
+        print(text + ': {}'.format(evt))
+    # print("A")
+    # ret += "test"
+    # Connect callbacks to the events fired by the speech recognizer
+    speech_recognizer.recognizing.connect(lambda evt: retRecognized('RECOGNIZING', evt))
+    speech_recognizer.recognized.connect(lambda evt: retRecognized('RECOGNIZED', evt))
+    speech_recognizer.session_started.connect(lambda evt: retRecognized('SESSION STARTED', evt))
+    speech_recognizer.session_stopped.connect(lambda evt: retRecognized('SESSION STOPPED', evt))
+    speech_recognizer.canceled.connect(lambda evt: retRecognized('CANCELED', evt))
+    # stop continuous recognition on either session stopped or canceled events
+    speech_recognizer.session_stopped.connect(stop_cb)
+    speech_recognizer.canceled.connect(stop_cb)
+
+    speech_recognizer.start_continuous_recognition()
+    while not done:
+        time.sleep(.5)
+
+    speech_recognizer.stop_continuous_recognition()
+
+    # if speech_recognition_result.reason == speechsdk.ResultReason.RecognizedSpeech:
+    #     # ret = speech_recognition_result
+    #     ret += "Recognized: {}".format(speech_recognition_result.text) + "\n\n"
+    # elif speech_recognition_result.reason == speechsdk.ResultReason.NoMatch:
+    #     ret += "No speech could be recognized: {}".format(speech_recognition_result.no_match_details) + "\n\n"
+    # elif speech_recognition_result.reason == speechsdk.ResultReason.Canceled:
+    #     cancellation_details = speech_recognition_result.cancellation_details
+    #     ret += "Speech Recognition canceled: {}".format(cancellation_details.reason) + "\n\n"
+    #     if cancellation_details.reason == speechsdk.CancellationReason.Error:
+    #         ret += "Error details: {}".format(cancellation_details.error_details) + "\n\n"
+    #         ret += "Did you set the speech resource key and region values?" + "\n\n"
 
     return ret
+    # return Response(content=ret, media_type="application/json")
 
 @app.get("/displayFrame/{frameNum}")
 async def displayFrame(frameNum):
@@ -69,6 +116,7 @@ async def displayFrame(frameNum):
 
 @app.get("/frameOCR/{frameNum}")
 async def frameOCR(frameNum):
+    # uuid, video_name, lecture_name, studentid, lecturerid
     frameNum = int(frameNum)
     # frameNum = 100
     vidcap = cv2.VideoCapture('/Users/pinglarin/Documents/script_code/imaginecup-2023/ocr-speech/comVidCut_trim.mp4')
@@ -90,8 +138,20 @@ async def frameOCR(frameNum):
     # print(b_br, "C.9")
 
     ret = localocr(b_br)
+    # print(ret)
+    data = json.loads(ret)
+    created_time = data['created_date_time']
+    all_sentence = ""
+    for line in data['analyze_result']['read_results'][0]['lines']:
+        all_sentence += line['text'] + " "
+    print(all_sentence)
+    output = {}
+    output['created_time'] = created_time
+    output['sentences'] = all_sentence
+    json_output = json.dumps(output)
+    # print(data['analyze_result']['read_results'])
 
-    return ret
+    return Response(content=json_output, media_type="application/json")
 
     # res, im_png = cv2.imencode(".png", frameImg)
     # return StreamingResponse(io.BytesIO(im_png.tobytes()), media_type="image/png")
@@ -114,6 +174,7 @@ def localocr(img): # async
     # Get the operation location (URL with ID as last appendage)
     read_operation_location = read_response.headers["Operation-Location"]
     # Take the ID off and use to get results
+    print(read_operation_location)
     operation_id = read_operation_location.split("/")[-1]
 
     # Call the "GET" API and wait for the retrieval of the results
@@ -128,10 +189,16 @@ def localocr(img): # async
 
     # Print the detected text, line by line
     if read_result.status == OperationStatusCodes.succeeded:
-        for text_result in read_result.analyze_result.read_results:
-            for line in text_result.lines:
-                ret += ''.join(line.text) 
-                ret += ' '.join(str(v) for v in line.bounding_box) 
+        # print(json.dumps(read_result.as_dict()))
+        ret = json.dumps(read_result.as_dict())
+        
+        # for text_result in read_result.analyze_result.read_results:
+        #     print(text_result)
+        #     for line in text_result.lines:
+        #         ret += ''.join(line.text) 
+                
+        #         ret += ' '.join(str(v) for v in line.bounding_box) 
+                
 
     return ret
 

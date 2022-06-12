@@ -46,8 +46,8 @@ def getPath(db: Session, uuid: str):
 
 
    
-# def get_video(db: Session, uuid: str):
-#     return db.query(models.Video).filter(models.Video.uuid == uuid).first()
+def get_video(db: Session, uuid: str):
+    return db.query(models.Video).filter(models.Video.uuid == uuid).first()
 
 
 # def get_videos(db: Session, skip: int = 0, limit: int = 100):
