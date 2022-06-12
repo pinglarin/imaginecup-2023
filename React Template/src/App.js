@@ -29,6 +29,10 @@ import Presentation from "layouts/pages/presentation";
 // Material Kit 2 React routes
 import routes from "routes";
 
+// Dragon s routes
+import Editor from "./pages/LandingPages/Editor/index";
+import VideoPlayer from "./pages/LandingPages/UploadPage/index";
+
 export default function App() {
   const { pathname } = useLocation();
 
@@ -57,6 +61,8 @@ export default function App() {
       <Routes>
         {getRoutes(routes)}
         <Route path="/presentation" element={<Presentation />} />
+        <Route path="/UpdateInfo/:id" element={<Editor />} />
+        <Route path="/VideoPlayer/:id" element={<VideoPlayer />} />
         <Route path="*" element={<Navigate to="/presentation" />} />
       </Routes>
     </ThemeProvider>

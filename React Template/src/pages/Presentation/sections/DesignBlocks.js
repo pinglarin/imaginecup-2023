@@ -24,6 +24,7 @@ import Grid from "@mui/material/Grid";
 import MKBox from "components/MKBox";
 import MKBadge from "components/MKBadge";
 import MKTypography from "components/MKTypography";
+import MKButton from "components/MKButton";
 
 // Presentation page components
 import ExampleCard from "pages/Presentation/components/ExampleCard";
@@ -32,6 +33,8 @@ import ExampleCard from "pages/Presentation/components/ExampleCard";
 import data from "pages/Presentation/sections/data/designBlocksData";
 
 function DesignBlocks() {
+  console.log("=== data test ===");
+  console.log(data);
   const renderData = data.map(({ title, description, items }) => (
     <Grid container spacing={3} sx={{ mb: 10 }} key={title}>
       <Grid item xs={12} lg={3}>
@@ -48,8 +51,13 @@ function DesignBlocks() {
         <Grid container spacing={3}>
           {items.map(({ image, name, count, route, pro }) => (
             <Grid item xs={12} md={4} sx={{ mb: 2 }} key={name}>
-              <Link to={pro ? "/" : route}>
-                <ExampleCard image={image} name={name} count={count} pro={pro} />
+              <Link to={{ pathname: `/VideoPlayer/${count}`, query: { id: route } }}>
+                <ExampleCard image={image} name={name} pro={pro} />
+              </Link>
+              <Link to={{ pathname: `/UpdateInfo/${count}`, query: { id: count } }}>
+                <MKButton color="warning" size="small">
+                  Edit info
+                </MKButton>
               </Link>
             </Grid>
           ))}

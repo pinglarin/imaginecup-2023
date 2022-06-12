@@ -1,6 +1,7 @@
 .PlayerVideo_page {
+    Display: fixed;
     text-align: center;
-    Align-Items: center;    
+    Align-Items: center;       
 }
 
 .PlayerVideo{

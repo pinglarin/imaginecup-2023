@@ -1,22 +1,31 @@
 import React, { useState } from "react";
 
-import Player from "./Player";
+import Player from "./Player/Player";
 import "video.js/dist/video-js.min.css";
+import "./Player/Controls";
+import "./Player/index";
 
 // My add function
-import Clip from "./VideoExample/OOP P01 CanteenICT Get-Started Session (Bi-Lingual)-20210310 0659-1.mp4";
+// import Clip from "./VideoExample/OOP P01 CanteenICT Get-Started Session (Bi-Lingual)-20210310 0659-1.mp4";
+
+const Splitpart = window.location.pathname.split("/");
+const UUID = Splitpart[2];
 
 export default function VideoMk2() {
+  console.log(UUID);
+  console.log(`http://127.0.0.1:8000/getpath?uuid=${UUID}`);
   // const Myplayer = {};
   const [state /* , setstate */] = useState({
     video: {
-      sources: [
-        {
-          // src: "http://vjs.zencdn.net/v/oceans.mp4",
-          src: Clip,
-          type: "video/mp4",
-        },
-      ],
+      // sources: [
+      //   {
+      //     // src: "http://vjs.zencdn.net/v/oceans.mp4",
+      //     // src: Clip,
+      //     src: "http://127.0.0.1:8000/getpath?uuid=65ef5523-be4f-4533-bc19-a3abe83c0664",
+      //     type: "video/mp4",
+      //   },
+      // ],
+      src: `http://127.0.0.1:8000/getpath?uuid=${UUID}`,
       poster:
         "https://cdn.discordapp.com/attachments/595430234736689173/923864093511798814/167a9d14e5017ffa2d39ac5567f37d30-db6wtbu.jpg",
     },

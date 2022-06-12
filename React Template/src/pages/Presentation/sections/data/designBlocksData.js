@@ -12,91 +12,20 @@ Coded by www.creative-tim.com
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
+import axios from "axios";
 
 const imagesPrefix = "https://cdn.discordapp.com/attachments/917582730982723625";
-// https://cdn.discordapp.com/attachments/917582730982723625/983667848545202206/FB_IMG_1558676210120.jpg
+// https://cdn.discordapp.com/attachments/917582730982723625/983667848545202206/FB_IMG_1558676210120.jpgconst
 
-export default [
+const ExportData = [
   {
-    title: "Design Blocks",
-    description: "A selection of 45 page sections that fit perfectly in any combination",
+    title: "Example Course",
+    description: "Just for test all video in fastapi",
     items: [
       {
         image: `${imagesPrefix}/983667449650114611/IMG_20181130_234218.jpg`,
-        name: "Page Headers",
-        count: 10,
-        route: "/sections/page-sections/page-headers",
-      },
-      {
-        image: `${imagesPrefix}/983667449650114611/IMG_20181130_234218.jpg`,
-        name: "Features",
-        count: 14,
-        route: "/sections/page-sections/features",
-      },
-      {
-        image: `${imagesPrefix}/983667449650114611/IMG_20181130_234218.jpg`,
-        name: "Pricing",
-        count: 8,
-        pro: true,
-      },
-      {
-        image: `${imagesPrefix}/983667449650114611/IMG_20181130_234218.jpg`,
-        name: "FAQ",
-        count: 1,
-        pro: true,
-      },
-      {
-        image: `${imagesPrefix}/983667449650114611/IMG_20181130_234218.jpg`,
-        name: "Blog Posts",
-        count: 11,
-        pro: true,
-      },
-      {
-        image: `${imagesPrefix}/983667449650114611/IMG_20181130_234218.jpg`,
-        name: "Testimonials",
-        count: 11,
-        pro: true,
-      },
-      {
-        image: `${imagesPrefix}/983667449650114611/IMG_20181130_234218.jpg`,
-        name: "Teams",
-        count: 6,
-        pro: true,
-      },
-      {
-        image: `${imagesPrefix}/983667449650114611/IMG_20181130_234218.jpg`,
-        name: "Stats",
-        count: 3,
-        pro: true,
-      },
-      {
-        image: `${imagesPrefix}/983667449650114611/IMG_20181130_234218.jpg`,
-        name: "Call to Actions",
-        count: 8,
-        pro: true,
-      },
-      {
-        image: `${imagesPrefix}/983667449650114611/IMG_20181130_234218.jpg`,
-        name: "Applications",
-        count: 6,
-        pro: true,
-      },
-      {
-        image: `${imagesPrefix}/logo-area.jpg`,
-        name: "Logo Areas",
-        count: 4,
-        pro: true,
-      },
-      {
-        image: `${imagesPrefix}/983667449650114611/IMG_20181130_234218.jpg`,
-        name: "Footers",
-        count: 10,
-        pro: true,
-      },
-      {
-        image: `${imagesPrefix}/983667449650114611/IMG_20181130_234218.jpg`,
-        name: "Footers",
-        count: 10,
+        name: "LockVideoExample",
+        count: 691140,
         pro: true,
       },
     ],
@@ -126,3 +55,36 @@ export default [
     ],
   },
 ];
+
+function RefreshData() {
+  let i = 0;
+  axios
+    .get("http://localhost:8000/getallvideos")
+    .then((response) => {
+      console.log(response);
+      console.log(ExportData);
+      console.log(ExportData[0].items);
+      console.log(response.data[0].LectureName);
+      for (i = 0; i < response.data.length; i += 1) {
+        ExportData[0].items.push({
+          image: `${imagesPrefix}/983667449650114611/IMG_20181130_234218.jpg`,
+          name: response.data[i].LectureName,
+          count: response.data[i].uuid,
+          route: `VideoPlayer/${response.data[i].uuid}`,
+        });
+      }
+      // ExportData[0].items.push({
+      //   image: `${imagesPrefix}/983667449650114611/IMG_20181130_234218.jpg`,
+      //   name: response.data[0].LectureName,
+      //   count: 10,
+      //   route: `/pages/landing-pages/UploadPage/${response.data[0].uuid}`,
+      // });
+      console.log("==============");
+      console.log(ExportData);
+    })
+    .catch((error) => console.log(error));
+}
+
+RefreshData();
+
+export default ExportData;

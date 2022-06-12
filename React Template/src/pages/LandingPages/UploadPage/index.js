@@ -21,6 +21,7 @@ import Timeline from "./PlayerVideo_page/Timeline_part/Timeline";
 import Doc from "./PlayerVideo_page/DocReader_part/Doc";
 import samplePDF from "./PlayerVideo_page/DocReader_part/Lec04 Image Matting.pdf";
 import VideoPlayer from "./PlayerVideo_page/Player_part/VideoMk2";
+import "./PlayerVideo_page/Playvideo.css";
 
 function Upload() {
   return (
@@ -37,12 +38,22 @@ function Upload() {
           sticky
         />
       </MKBox>
-      <p> Test Video </p>
-      <VideoPlayer />
-      <p>Test Timeline</p>
-      <Timeline />
-      <p>Test Doc Reader</p>
-      <Doc pdf={samplePDF} />
+      <br />
+      <br />
+      <br />
+      <br />
+      <div className="PlayerVideo_page">
+        <p> Test Video </p>
+        <div className="PlayerVideo">
+          <VideoPlayer />
+        </div>
+        <p>Test Timeline</p>
+        <Timeline />
+        <p>Test Doc Reader</p>
+        <div className="Doc">
+          <Doc pdf={samplePDF} />
+        </div>
+      </div>
     </>
   );
 }

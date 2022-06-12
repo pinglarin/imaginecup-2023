@@ -43,9 +43,7 @@
     "react-scripts": "4.0.3",
     "react-syntax-highlighter": "15.4.5",
     "uuid": "^8.3.2",
-    "video-js": "^0.7.0",
     "video.js": "^7.19.2",
-    "videojs-ima": "^2.0.1",
     "videojs-markers": "^1.0.1",
     "web-vitals": "1.0.1"
   },
@@ -75,7 +73,6 @@
     ]
   },
   "devDependencies": {
-    "eslint": "7.30.0",
     "eslint-config-airbnb": "18.2.1",
     "eslint-config-prettier": "8.3.0",
     "eslint-plugin-import": "2.23.4",
