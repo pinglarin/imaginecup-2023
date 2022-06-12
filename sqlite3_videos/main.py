@@ -8,16 +8,8 @@ from fastapi.encoders import jsonable_encoder
 from schemas import VideoBase, VideoUpdate
 import uvicorn
 import uuid
-from typing import Optional, Type
 from databases import Database
-
-from fastapi.responses import StreamingResponse
-
-from pathlib import Path
 from fastapi import FastAPI
-from fastapi import Request, Response
-from fastapi import Header
-from fastapi.templating import Jinja2Templates
 
 
 models.Base.metadata.create_all(bind=engine)
@@ -107,7 +99,6 @@ def read_videos_studentID(StudentID: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Video not found")
     return videos
 
- 
 @app.get("/getallvideos")
 def read_videos(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     print("in getallvideos")
@@ -115,7 +106,7 @@ def read_videos(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     return videos
     
 @app.get("/getpath")
-async def fetch_data(uuid: str):
+async def fetch_path(uuid: str):
     print(uuid)
     vuuid = f'"{uuid}"'
     print(vuuid)
@@ -140,78 +131,18 @@ async def upload_video(file: UploadFile, video: schemas.VideoBase = Depends(Vide
     return "Success"
 # To be done: if function returns success, the user is notified of it, and the opposite goes for failed attempt.
 
-# @app.patch("/updatevideo/{uuid}")
-# def update_hero(video: schemas.VideoUpdate = Depends(VideoBase), db: Session = Depends(get_db)):
-#     db_vdo = crud.get_video_by_ID(db, uuid=video.uuid)
-#     if db_vdo is None:
-#         raise HTTPException(status_code=404, detail="Video not found") 
-#     vdo_data = video.dict(exclude_unset=True)
-#     print(vdo_data)
-#     for key, value in vdo_data.items():
-#         setattr(db_vdo, key, value)
-#     db.add(db_vdo)
-#     db.commit()
-#     db.refresh(db_vdo)
-#     return db_vdo
-
 @app.put("/updatevideo/{uuid}")
 async def update_item(vuuid: str, video: schemas.VideoBase = Depends(VideoBase.send_form), db: Session = Depends(get_db)):
-    db_vdo = db.get(models.Video)
-    update_item_encoded = jsonable_encoder(video)
-    print(update_item_encoded)
-    #vid = update_item_encoded
-    return "good"
-
-
-# templates = Jinja2Templates(directory="templates")
-# CHUNK_SIZE = 1024*1024
-# video_path = Path("videos/comVidCutMP4.mp4")
-
-
-# @app.get("/streamvideo")
-# async def video_endpoint(range: str = Header(None)):
-#     start, end = range.replace("bytes=", "").split("-")
-#     start = int(start)
-#     end = int(end) if end else start + CHUNK_SIZE
-#     with open(video_path, "rb") as video:
-#         video.seek(start)
-#         data = video.read(end - start)
-#         filesize = str(video_path.stat().st_size)
-#         headers = {
-#             'Content-Range': f'bytes {str(start)}-{str(end)}/{filesize}',
-#             'Accept-Ranges': 'bytes'
-#         }
-#         return Response(data, status_code=206, headers=headers, media_type="comVidCut/mp4")
-
-#ORIGINAL!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-# @app.patch("/updatevideo/{id}", response_model=schemas.VideoReturn) #not done
-# async def update_video(uuid: str, video: schemas.VideoUpdate = Depends(VideoUpdate.as_form), db: Session = Depends(get_db)):
-#     db_vdo = read_video(uuid, db)
-#     if db_vdo is None:
-#         raise HTTPException(status_code=404, detail="Video not found")
-#     db.add(db_vdo)
-#     db.commit()
-#     db.refresh(db_vdo)
-#     print("Video is successfully updated")
-#     return db_vdo
-
-
-# async def update_video(uuid: str, video: schemas.VideoUpdate = Depends(VideoUpdate.as_form), db: Session = Depends(get_db)):
-#     db_vdo = read_video(uuid, db)
-#     if db_vdo is None:
-#         raise HTTPException(status_code=404, detail="Video not found")
-
-#     updated_data = video.dict(exclude_unset=True)
-#     for key, value in updated_data.items():
-#         print("key", key)
-#         print("value", value)
-#         setattr(db_vdo, key, value)
-#     db.add(db_vdo)
-#     db.commit()
-#     db.refresh(db_vdo)
-#     print("Video is successfully updated")
-#     return db_vdo
-
+    db_vdo = db.get(models.Video, vuuid)
+    if not db_vdo:
+        raise HTTPException(status_code=404, detail="Video not found")
+    vdo_data = video.dict()
+    for key, value in vdo_data.items():
+        setattr(db_vdo, key, value)
+    db.add(db_vdo)
+    db.commit()
+    db.refresh(db_vdo)
+    return db_vdo
 
 @app.delete("/deletevideo/{id}")
 async def delete_video(uuid: str, db: Session = Depends(get_db)):
@@ -224,12 +155,12 @@ async def delete_video(uuid: str, db: Session = Depends(get_db)):
     return "success"
 
 
-@app.get("/vid")
-def iterfile():  # 
-    with open(r"comvideos\comVidCutMP4.mp4", mode="rb") as file_like:  # 
-        yield from file_like  # 
+# @app.get("/vid")
+# def iterfile():  # 
+#     with open(r"comvideos\comVidCutMP4.mp4", mode="rb") as file_like:  # 
+#         yield from file_like  # 
 
-    return StreamingResponse(iterfile(), media_type="video/mp4")
+#     return StreamingResponse(iterfile(), media_type="video/mp4")
 
 
 
