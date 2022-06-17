@@ -36,16 +36,6 @@ def create_video(db: Session, video: schemas.VideoBase, file: UploadFile, uuid:s
     print("Video is successfully uploaded")
     return vdo
 
-def getPath(db: Session, uuid: str):
-    video = get_video_by_ID(db, uuid)
-    return db.query(models.Video).filter(models.Video.VideoPath == VideoPath).first()
-#def update_video
-
-
-
-
-
-   
 def get_video(db: Session, uuid: str):
     return db.query(models.Video).filter(models.Video.uuid == uuid).first()
 

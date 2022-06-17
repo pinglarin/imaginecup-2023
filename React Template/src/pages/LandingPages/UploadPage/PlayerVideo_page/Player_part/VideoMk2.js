@@ -17,15 +17,14 @@ export default function VideoMk2() {
   // const Myplayer = {};
   const [state /* , setstate */] = useState({
     video: {
-      // sources: [
-      //   {
-      //     // src: "http://vjs.zencdn.net/v/oceans.mp4",
-      //     // src: Clip,
-      //     src: "http://127.0.0.1:8000/getpath?uuid=65ef5523-be4f-4533-bc19-a3abe83c0664",
-      //     type: "video/mp4",
-      //   },
-      // ],
-      src: `http://127.0.0.1:8000/getpath?uuid=${UUID}`,
+      sources: [
+        {
+          // src: "http://vjs.zencdn.net/v/oceans.mp4",
+          // src: Clip,
+          src: "http://127.0.0.1:8000/stream?uuid=27c0d980-cc06-4926-b556-42602af15c31",
+          type: "video/mp4",
+        },
+      ],
       poster:
         "https://cdn.discordapp.com/attachments/595430234736689173/923864093511798814/167a9d14e5017ffa2d39ac5567f37d30-db6wtbu.jpg",
     },

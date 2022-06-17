@@ -10,7 +10,7 @@ import uvicorn
 import uuid
 from databases import Database
 from fastapi import FastAPI
-
+from fastapi.responses import FileResponse
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -104,15 +104,7 @@ def read_videos(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     print("in getallvideos")
     videos = crud.get_all_videos(db, skip=skip, limit=limit)
     return videos
-    
-@app.get("/getpath")
-async def fetch_path(uuid: str):
-    print(uuid)
-    vuuid = f'"{uuid}"'
-    print(vuuid)
-    query = "SELECT VideoPath FROM video WHERE uuid={}".format(str(vuuid))
-    results = database.fetch_all(query=query)
-    return await results
+
 
 @app.post("/uploadvideo")
 async def upload_video(file: UploadFile, video: schemas.VideoBase = Depends(VideoBase.send_form), db: Session = Depends(get_db)):
@@ -155,14 +147,18 @@ async def delete_video(uuid: str, db: Session = Depends(get_db)):
     return "success"
 
 
-# @app.get("/vid")
-# def iterfile():  # 
-#     with open(r"comvideos\comVidCutMP4.mp4", mode="rb") as file_like:  # 
-#         yield from file_like  # 
-
-#     return StreamingResponse(iterfile(), media_type="video/mp4")
-
-
+@app.get("/stream")
+async def stream_video(uuid: str):
+    vuuid = f'"{uuid}"'
+    print(vuuid)
+    query = "SELECT VideoPath FROM video WHERE uuid={}".format(str(vuuid))
+    results = database.fetch_one(query=query)
+    print(results)
+    path = str( await results)
+    path = path[:-3]
+    path = path[2:]
+    print(path)
+    return FileResponse(path, media_type="video/mp4")
 
 #------------------------------------------------------------------------------------------------------------------------------------------
 #OLD UNUSED CODE
