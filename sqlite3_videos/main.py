@@ -10,7 +10,7 @@ import uvicorn
 import uuid
 from databases import Database
 from fastapi import FastAPI
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, StreamingResponse
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -114,11 +114,11 @@ async def upload_video(file: UploadFile, video: schemas.VideoBase = Depends(Vide
     if db_vdo:
         raise HTTPException(status_code=400, detail="Video already exists in database!")
     print("about to input into database >> filename:", file.filename)
-    with open(f'../React_part/src/components/PlayerVideo_page/Player_part/uploadedVideos/{vuuid}.mp4', 'wb') as uploadvideo:
+    with open(f'uploadedVideos/{vuuid}.mp4', 'wb') as uploadvideo:
         content = await file.read()
         uploadvideo.write(content)
         # VideoPath = f'C:/Users/Aekky/OneDrive - Mahidol University/Desktop/VS Code work/imaginecup-2023/React_part/src/components/PlayerVideo_page/Player_part/uploadedVideos/{vuuid}.mp4'
-        VideoPath = f'React_part/src/components/PlayerVideo_page/Player_part/uploadedVideos/{vuuid}.mp4' # is this type of path correct??
+        VideoPath = f'uploadedVideos/{vuuid}.mp4' # is this type of path correct??
     crud.create_video(db=db, video=video, file=file, uuid=vuuid, path = VideoPath)
     return "Success"
 # To be done: if function returns success, the user is notified of it, and the opposite goes for failed attempt.
@@ -146,20 +146,20 @@ async def delete_video(uuid: str, db: Session = Depends(get_db)):
     print("Video is successfully deleted")
     return "success"
 
+@app.get("/teststream") # http://127.0.0.1:8000/teststream
+async def test_stream():
+    return FileResponse('uploadedVideos/27c0d980-cc06-4926-b556-42602af15c31.mp4', media_type="video/mp4")
 
 @app.get("/stream")
 async def stream_video(uuid: str):
     vuuid = f'"{uuid}"'
     print(vuuid)
     query = "SELECT VideoPath FROM video WHERE uuid={}".format(str(vuuid))
-    results = database.fetch_one(query=query)
-    print(results)
-    path = str( await results)
-    path = path[:-3]
-    path = path[2:]
+    path = str(await database.fetch_one(query=query))
+    path = path[2:-3]
     print(path)
     return FileResponse(path, media_type="video/mp4")
-
+    
 #------------------------------------------------------------------------------------------------------------------------------------------
 #OLD UNUSED CODE
 # @app.post("/video/post", response_model=schemas.Video)
@@ -171,6 +171,7 @@ async def stream_video(uuid: str):
 #         raise HTTPException(status_code=400, detail="Video already exists in database!")
 #     print("crud.create_video")
 #     return crud.create_video(db=db, video=video)
+
 
 #original function
 # @app.post("/uploadfile")
