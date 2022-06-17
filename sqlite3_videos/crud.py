@@ -36,9 +36,14 @@ def create_video(db: Session, video: schemas.VideoBase, file: UploadFile, uuid:s
     print("Video is successfully uploaded")
     return vdo
 
-def get_video(db: Session, uuid: str):
-    return db.query(models.Video).filter(models.Video.uuid == uuid).first()
-
+def create_student(db: Session, student: schemas.StudentBase):
+    print("in create_student")
+    stu = models.Student(StudentID=student.StudentID, Firstname=student.Firstname, Lastname=student.Lastname)
+    db.add(stu)
+    db.commit()
+    db.refresh(stu)
+    print("student is successfully created")
+    return stu
 
 # def get_videos(db: Session, skip: int = 0, limit: int = 100):
 #     return db.query(models.Video).offset(skip).limit(limit).all()

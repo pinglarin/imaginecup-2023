@@ -11,9 +11,32 @@ class Video(Base):
     VideoName = Column(String, nullable=False) #file.filename
     VideoPath = Column(String, nullable=False)
     LectureName = Column(String, nullable=False)
-    LecturerID = Column(Integer)
-    StudentID = Column(Integer)
- 
+    CourseName = Column(String, nullable=False)
+    LecturerID = Column(Integer, ForeignKey("Lecturer.lecturer"))
+    StudentID = Column(Integer, ForeignKey("Student.stu"))
+
+    vid_lecturer = relationship("Lecturer", back_populates="lecturer")
+    vid_stu = relationship("Student", back_populates="stu")
+   
+    
+class Student(Base):
+    __tablename__ = "student"
+
+    StudentID = Column(Integer, primary_key=True)
+    Firstname = Column(String, nullable=False)
+    Lastname = Column(String, nullable=False)
+
+    stu = relationship("Video", back_populates="vid_stu")
+
+class Lecturer(Base):
+    __tablename__ = "lecturer"
+
+    LecturerID = Column(Integer, primary_key=True)
+    Firstname = Column(String, nullable=False)
+    Lastname = Column(String, nullable=False)
+
+    lecturer = relationship("Video", back_populates="vid_lecturer")
+
     #from https://www.codegrepper.com/code-examples/sql/uuid+sqlalcomany
 
     #uuid = Column(UUID, primary_key=True, server_default='uuid_generate_v4()')
@@ -48,7 +71,6 @@ class Video(Base):
 #     is_active = Column(Boolean, default=True)
 
 #     items = relationship("Item", back_populates="owner")
-
 
 # class Item(Base):
 #     __tablename__ = "items"

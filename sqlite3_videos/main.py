@@ -5,7 +5,7 @@ from database import SessionLocal, engine
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, File, Form, UploadFile
 from fastapi.encoders import jsonable_encoder
-from schemas import VideoBase, VideoUpdate
+from schemas import VideoBase, StudentBase
 import uvicorn
 import uuid
 from databases import Database
@@ -159,7 +159,20 @@ async def stream_video(uuid: str):
     path = path[2:-3]
     print(path)
     return FileResponse(path, media_type="video/mp4")
-    
+
+@app.post("/test")
+async def fetch_data(id: int):
+    query = "SELECT LectureName FROM video WHERE ID={}".format(str(id))
+    results = await database.fetch_all(query=query)
+    return  results
+
+@app.post("/signup_student")
+async def signupStudent(student: schemas.StudentBase = Depends(StudentBase.send_form), db: Session = Depends(get_db)):
+    # db_vdo = crud.get_video_by_ID(db, uuid=vuuid)
+    # if db_vdo:
+    #     raise HTTPException(status_code=400, detail="Video already exists in database!")
+    crud.create_student(db=db, student=student)
+    return "Success"  
 #------------------------------------------------------------------------------------------------------------------------------------------
 #OLD UNUSED CODE
 # @app.post("/video/post", response_model=schemas.Video)
