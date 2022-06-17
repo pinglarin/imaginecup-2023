@@ -35,7 +35,7 @@ import DesignBlocks from "pages/Presentation/sections/DesignBlocks";
 import Pages from "pages/Presentation/sections/Pages";
 import Testimonials from "pages/Presentation/sections/Testimonials";
 import Download from "pages/Presentation/sections/Download";
-
+import Searchbar from "pages/Presentation/sections/Serachbar";
 // Presentation page components
 import BuiltByDevelopers from "pages/Presentation/components/BuiltByDevelopers";
 
@@ -111,6 +111,7 @@ function Presentation() {
       >
         {/* <Counters /> */}
         <Information />
+        <Searchbar />
         <DesignBlocks />
         <Pages />
         <Container sx={{ mt: 6 }}>
