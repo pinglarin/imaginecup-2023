@@ -37,10 +37,6 @@ class VideoBase(BaseModel):
     ) -> Self:
         return cls(LectureName=LectureName, CourseName=CourseName, LecturerID=LecturerID, StudentID=StudentID)
 
-# class VideoReturn(VideoBase):
-#     uuid: str
-#     VideoName: str
-
 class VideoReturn(VideoBase):
     uuid: str
     VideoName: str

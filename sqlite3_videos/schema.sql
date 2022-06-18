@@ -39,6 +39,19 @@ CREATE TABLE frame ( -- should there be metadata?
         REFERENCES OCR (uuid)
 );
 
+-- DROP TABLE IF EXISTS student_group;
+
+-- CREATE TABLE student_group (
+--     GroupNumber INT PRIMARY KEY,
+--     StudentID INT NOT NULL,
+
+--     FOREIGN KEY (GroupNumber)
+--         REFERENCES video (GroupNumber),
+
+--     FOREIGN KEY (StudentID)
+--         REFERENCES student (StudentID)
+-- );
+
 DROP TABLE IF EXISTS student;
 
 CREATE TABLE student (
@@ -54,6 +67,9 @@ CREATE TABLE lecturer (
     Firstname TEXT NOT NULL,
     Lastname TEXT NOT NULL    
 );
+
+
+
 -- table speech recog << to be done
 
 -- to be researched: keeping JSON results in DB

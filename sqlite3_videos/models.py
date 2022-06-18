@@ -12,11 +12,11 @@ class Video(Base):
     VideoPath = Column(String, nullable=False)
     LectureName = Column(String, nullable=False)
     CourseName = Column(String, nullable=False)
-    LecturerID = Column(Integer, ForeignKey("Lecturer.lecturer"))
-    StudentID = Column(Integer, ForeignKey("Student.stu"))
+    LecturerID = Column(Integer, ForeignKey("lecturer.LecturerID"))
+    StudentID = Column(Integer, ForeignKey("student.StudentID"))
 
-    vid_lecturer = relationship("Lecturer", back_populates="lecturer")
-    vid_stu = relationship("Student", back_populates="stu")
+    vid_lecturer = relationship("Lecturer", foreign_keys=[LecturerID])
+    vid_stu = relationship("Student", foreign_keys=[StudentID])
    
     
 class Student(Base):
@@ -26,16 +26,12 @@ class Student(Base):
     Firstname = Column(String, nullable=False)
     Lastname = Column(String, nullable=False)
 
-    stu = relationship("Video", back_populates="vid_stu")
-
 class Lecturer(Base):
     __tablename__ = "lecturer"
 
     LecturerID = Column(Integer, primary_key=True)
     Firstname = Column(String, nullable=False)
     Lastname = Column(String, nullable=False)
-
-    lecturer = relationship("Video", back_populates="vid_lecturer")
 
     #from https://www.codegrepper.com/code-examples/sql/uuid+sqlalcomany
 

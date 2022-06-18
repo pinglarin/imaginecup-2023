@@ -5,7 +5,7 @@ from database import SessionLocal, engine
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, File, Form, UploadFile
 from fastapi.encoders import jsonable_encoder
-from schemas import VideoBase, StudentBase
+from schemas import VideoBase, StudentBase, LecturerBase
 import uvicorn
 import uuid
 from databases import Database
@@ -105,7 +105,6 @@ def read_videos(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     videos = crud.get_all_videos(db, skip=skip, limit=limit)
     return videos
 
-
 @app.post("/uploadvideo")
 async def upload_video(file: UploadFile, video: schemas.VideoBase = Depends(VideoBase.send_form), db: Session = Depends(get_db)):
     vuuid = str(uuid.uuid4())
@@ -172,7 +171,39 @@ async def signupStudent(student: schemas.StudentBase = Depends(StudentBase.send_
     # if db_vdo:
     #     raise HTTPException(status_code=400, detail="Video already exists in database!")
     crud.create_student(db=db, student=student)
-    return "Success"  
+    return "Success"
+
+@app.post("/signup_lecturer")
+async def signupLecturer(lecturer: schemas.LecturerBase = Depends(LecturerBase.send_form), db: Session = Depends(get_db)):
+    # db_vdo = crud.get_video_by_ID(db, uuid=vuuid)
+    # if db_vdo:
+    #     raise HTTPException(status_code=400, detail="Video already exists in database!")
+    crud.create_lecturer(db=db, lecturer=lecturer)
+    return "Success"
+
+@app.get("/get/coursename")
+async def get_from_coursename(coursename: str):
+    query = "SELECT * FROM video WHERE CourseName = :CourseName"
+    rows = await database.fetch_all(query=query, values={"CourseName": coursename})
+    return rows
+
+@app.get("/get/lecturename")
+async def get_from_lecturename(lecturename: str):
+    query = "SELECT * FROM video WHERE LectureName = :LectureName"
+    rows = await database.fetch_all(query=query, values={"LectureName": lecturename})
+    return rows
+
+@app.get("/get/lectures_of_lecturer")
+async def get_lectures_of_lecturer(firstname: str):
+    query = "SELECT * FROM video LEFT JOIN lecturer ON (video.LecturerID = lecturer.LecturerID) WHERE lecturer.Firstname = :Firstname"
+    rows = await database.fetch_all(query=query, values={"Firstname": firstname})
+    return rows
+
+@app.get("/get/viewed_videos")
+async def get_viewed_videos(firstname: str):
+    query = "SELECT * FROM video LEFT JOIN student ON (video.StudentID = student.StudentID) WHERE student.Firstname = :Firstname"
+    rows = await database.fetch_all(query=query, values={"Firstname": firstname})
+    return rows
 #------------------------------------------------------------------------------------------------------------------------------------------
 #OLD UNUSED CODE
 # @app.post("/video/post", response_model=schemas.Video)
