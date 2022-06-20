@@ -159,6 +159,22 @@ async def stream_video(uuid: str):
     print(path)
     return FileResponse(path, media_type="video/mp4")
 
+
+@app.get("/stream2")
+async def main(uuid: str):
+    vuuid = f'"{uuid}"'
+    print(vuuid)
+    query = "SELECT VideoPath FROM video WHERE uuid={}".format(str(vuuid))
+    path = str(await database.fetch_one(query=query))
+    path = path[2:-3]
+    print(path)
+    def iterfile():  # 
+        with open(path, mode="rb") as file_like:  # 
+            yield from file_like  # 
+
+    return StreamingResponse(iterfile(), media_type="video/mp4")
+
+
 @app.post("/test")
 async def fetch_data(id: int):
     query = "SELECT LectureName FROM video WHERE ID={}".format(str(id))
