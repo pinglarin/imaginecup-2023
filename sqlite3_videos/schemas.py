@@ -1,7 +1,6 @@
 from typing import Optional, Type
 from typing_extensions import Self
 import inspect
-import crud
 from database import SessionLocal, engine
 
 from pydantic import BaseModel
