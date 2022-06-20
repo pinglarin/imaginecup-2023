@@ -24,14 +24,14 @@ import json
 import subprocess
 
 
-app = FastAPI()
+# app = FastAPI()
 
 
-@app.get("/sampleSpeech")
-def recognize_from_microphone():
+# @app.get("/sampleSpeech")
+def recognize_from_long_file():
 
     # path = "media_files/comVidCutMP3.mp3" # ocr-speech/
-    path = "media_files/comVidCutMP4_trim.mp4" # ocr-speech/
+    path = "comvideos/comVidCutMP4.mp4" # ocr-speech/
     # path = "sample_sound.mp3"
     name, extension = os.path.splitext(path)
     print("A")
@@ -112,23 +112,23 @@ def recognize_from_microphone():
     # return ret
     # return Response(content=ret, media_type="application/json")
 
-@app.get("/displayFrame/{frameNum}")
+# @app.get("/displayFrame/{frameNum}")
 async def displayFrame(frameNum):
     frameNum = int(frameNum)
-    path = "comVidCut_trim.mp4"#"/Users/pinglarin/Documents/script_code/imaginecup-2023/ocr-speech/comVidCut_trim.mp4"
-    vidcap = cv2.VideoCapture(path)
+    vidcap = cv2.VideoCapture('/Users/pinglarin/Documents/script_code/imaginecup-2023/ocr-speech/comVidCut_trim.mp4')
     vidcap.set(1, frameNum-1)
     res, frameImg = vidcap.read()
 
     res, im_png = cv2.imencode(".png", frameImg)
     return StreamingResponse(io.BytesIO(im_png.tobytes()), media_type="image/png")
 
-@app.get("/vidOCR/{vidID}")
-async def vidOCR(vidID):
+# @app.get("/vidOCR/{vidID}")
+async def vidOCR(path):
+    print("start vid ocr")
     json_list = []
     count = 0
-    path = "/Users/pinglarin/Documents/script_code/imaginecup-2023/ocr-speech/media_files/"
-    cap = cv2.VideoCapture(path + vidID + '.mp4') # comVidCutMP4_trim_2.mp4
+    # path = 'uploadedVideoes/'#"/Users/pinglarin/Documents/script_code/imaginecup-2023/ocr-speech/media_files/"
+    cap = cv2.VideoCapture(path) # cv2.VideoCapture(path + vidID + '.mp4') # comVidCutMP4_trim_2.mp4
     total_frame = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     print("total frame count:", total_frame)
     if (total_frame <= 0): 
@@ -146,7 +146,7 @@ async def vidOCR(vidID):
         frame_result_loaded = json.loads(frame_ocr_result)
         json_list.append(frame_result_loaded)
         print("current frame:", count)
-        count += 100
+        count += 10000 # around five minutes
         cap.set(cv2.CAP_PROP_POS_FRAMES, count)
         
         if cv2.waitKey(1) == ord('q'):
@@ -165,7 +165,7 @@ def cvtVidcapToIOBuffer(frameImg):
     b_br = io.BufferedReader(b_handle)
     return b_br
 
-@app.get("/frameOCR/{frameNum}")
+# @app.get("/frameOCR/{frameNum}")
 async def frameOCR(frameNum):
     # uuid, video_name, lecture_name, studentid, lecturerid
     frameNum = int(frameNum)
@@ -247,7 +247,7 @@ def localocr(img): # async
 
     return ret
 
-@app.get("/sampleOCR")
+# @app.get("/sampleOCR")
 def ocr(img): # async
     subscription_key = "37cf6d8217354a25b5bad0cc9a738599"
     endpoint = "https://ocr-computer-vision-imaginecup-2023.cognitiveservices.azure.com/"

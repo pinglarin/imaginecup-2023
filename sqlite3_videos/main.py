@@ -12,6 +12,8 @@ from databases import Database
 from fastapi import FastAPI
 from fastapi.responses import FileResponse, StreamingResponse
 
+from speech_ocr import *
+
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
@@ -117,8 +119,12 @@ async def upload_video(file: UploadFile, video: schemas.VideoBase = Depends(Vide
         content = await file.read()
         uploadvideo.write(content)
         # VideoPath = f'C:/Users/Aekky/OneDrive - Mahidol University/Desktop/VS Code work/imaginecup-2023/React_part/src/components/PlayerVideo_page/Player_part/uploadedVideos/{vuuid}.mp4'
-        VideoPath = f'uploadedVideos/{vuuid}.mp4' # is this type of path correct??
+        VideoPath = f'uploadedVideos/{vuuid}.mp4' 
+        
     crud.create_video(db=db, video=video, file=file, uuid=vuuid, path = VideoPath)
+    # not working (ignored) ???
+    json_ocr_output = vidOCR(VideoPath)
+    print(json_ocr_output)
     return "Success"
 # To be done: if function returns success, the user is notified of it, and the opposite goes for failed attempt.
 
