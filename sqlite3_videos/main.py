@@ -5,7 +5,7 @@ from database import SessionLocal, engine
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, File, Form, UploadFile
 from fastapi.encoders import jsonable_encoder
-from schemas import VideoBase, StudentBase, LecturerBase
+from schemas import VideoBase, StudentBase, LecturerBase, GroupBase
 import uvicorn
 import uuid
 from databases import Database
@@ -67,37 +67,37 @@ def read_video(uuid: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Video not found")
     return db_vdo
 
-@app.get("/getvideos_videoname/{videoname}")
-def read_videos_videoname(VideoName: str, db: Session = Depends(get_db)):
-    print("in getvideos/{videoname}")
-    videos = crud.get_videos_by_VideoName(db, VideoName=VideoName)
-    if videos is None:
-        raise HTTPException(status_code=404, detail="Video not found")
-    return videos
+# @app.get("/getvideos_videoname/{videoname}")
+# def read_videos_videoname(VideoName: str, db: Session = Depends(get_db)):
+#     print("in getvideos/{videoname}")
+#     videos = crud.get_videos_by_VideoName(db, VideoName=VideoName)
+#     if videos is None:
+#         raise HTTPException(status_code=404, detail="Video not found")
+#     return videos
 
-@app.get("/getvideos_lecturename/{lecturename}")
-def read_videos_lecturename(LectureName : str, db: Session = Depends(get_db)):
-    print("in getvideos/{lecturename}")
-    videos = crud.get_videos_by_LectureName(db, LectureName=LectureName)
-    if videos is None:
-        raise HTTPException(status_code=404, detail="Video not found")
-    return videos
+# @app.get("/getvideos_lecturename/{lecturename}")
+# def read_videos_lecturename(LectureName : str, db: Session = Depends(get_db)):
+#     print("in getvideos/{lecturename}")
+#     videos = crud.get_videos_by_LectureName(db, LectureName=LectureName)
+#     if videos is None:
+#         raise HTTPException(status_code=404, detail="Video not found")
+#     return videos
 
-@app.get("/getvideos_lecturerID/{lecturerID}")
-def read_videos_lecturerID(LecturerID: int, db: Session = Depends(get_db)):
-    print("in getvideos/{lecturerID}")
-    videos = crud.get_videos_by_LecturerID(db, LecturerID=LecturerID)
-    if videos is None:
-        raise HTTPException(status_code=404, detail="Video not found")
-    return videos
+# @app.get("/getvideos_lecturerID/{lecturerID}")
+# def read_videos_lecturerID(LecturerID: int, db: Session = Depends(get_db)):
+#     print("in getvideos/{lecturerID}")
+#     videos = crud.get_videos_by_LecturerID(db, LecturerID=LecturerID)
+#     if videos is None:
+#         raise HTTPException(status_code=404, detail="Video not found")
+#     return videos
 
-@app.get("/getvideos_studentID/{studentID}")
-def read_videos_studentID(StudentID: int, db: Session = Depends(get_db)):
-    print("in getvideos/{studentID}")
-    videos = crud.get_videos_by_StudentID(db, StudentID=StudentID)
-    if videos is None:
-        raise HTTPException(status_code=404, detail="Video not found")
-    return videos
+# @app.get("/getvideos_studentID/{studentID}")
+# def read_videos_studentID(StudentID: int, db: Session = Depends(get_db)):
+#     print("in getvideos/{studentID}")
+#     videos = crud.get_videos_by_StudentID(db, StudentID=StudentID)
+#     if videos is None:
+#         raise HTTPException(status_code=404, detail="Video not found")
+#     return videos
 
 @app.get("/getallvideos")
 def read_videos(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
@@ -147,7 +147,7 @@ async def delete_video(uuid: str, db: Session = Depends(get_db)):
 
 @app.get("/teststream") # http://127.0.0.1:8000/teststream
 async def test_stream():
-    return FileResponse('uploadedVideos/27c0d980-cc06-4926-b556-42602af15c31.mp4', media_type="video/mp4")
+    return FileResponse('uploadedVideos/1ce89b45-1ab6-478c-b85f-91233176514e.mp4', media_type="video/mp4")
 
 @app.get("/stream")
 async def stream_video(uuid: str):
@@ -199,11 +199,31 @@ async def get_lectures_of_lecturer(firstname: str):
     rows = await database.fetch_all(query=query, values={"Firstname": firstname})
     return rows
 
-@app.get("/get/viewed_videos")
-async def get_viewed_videos(firstname: str):
-    query = "SELECT * FROM video LEFT JOIN student ON (video.StudentID = student.StudentID) WHERE student.Firstname = :Firstname"
-    rows = await database.fetch_all(query=query, values={"Firstname": firstname})
+# @app.get("/get/viewed_videos")
+# async def get_viewed_videos(firstname: str):
+#     query = "SELECT * FROM video LEFT JOIN student ON (video.StudentID = student.StudentID) WHERE student.Firstname = :Firstname"
+#     rows = await database.fetch_all(query=query, values={"Firstname": firstname})
+#     return rows
+
+@app.post("/group_students")
+async def groupStudents(group: schemas.GroupBase = Depends(GroupBase.send_form), db: Session = Depends(get_db)):
+    # db_vdo = crud.get_video_by_ID(db, uuid=vuuid)
+    # if db_vdo:
+    #     raise HTTPException(status_code=400, detail="Video already exists in database!")
+    crud.assign_groups(db=db, group=group)
+    return "Success"
+
+@app.get("/get/students_in_group")
+async def students_in_group(GroupNumber: int):
+    query = "SELECT * FROM student INNER JOIN student_group ON (student.StudentID = student_group.StudentID) WHERE student_group.GroupNumber = :GroupNumber"
+    rows = await database.fetch_all(query=query, values={"GroupNumber": GroupNumber})
     return rows
+
+# @app.get("/get/video_permission/students")
+# async def students_in_group(GroupNumber: int):
+#     query = "SELECT * FROM student INNER JOIN student_group ON (student.StudentID = student_group.StudentID) WHERE student_group.GroupNumber = :GroupNumber"
+#     rows = await database.fetch_all(query=query, values={"GroupNumber": GroupNumber})
+#     return rows   
 #------------------------------------------------------------------------------------------------------------------------------------------
 #OLD UNUSED CODE
 # @app.post("/video/post", response_model=schemas.Video)

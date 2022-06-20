@@ -9,26 +9,25 @@ def get_video_by_ID(db: Session, uuid: str):
     print("uuid in get_video: ", uuid)
     return db.query(models.Video).filter(models.Video.uuid == uuid).first()
 
-def get_videos_by_VideoName(db: Session, VideoName: str):
-    return db.query(models.Video).filter(models.Video.VideoName == VideoName).all()
+# def get_videos_by_VideoName(db: Session, VideoName: str):
+#     return db.query(models.Video).filter(models.Video.VideoName == VideoName).all()
 
-def get_videos_by_LectureName(db: Session, LectureName: str):
-    print("in function")
-    return db.query(models.Video).filter(models.Video.LectureName == LectureName).all()
+# def get_videos_by_LectureName(db: Session, LectureName: str):
+#     print("in function")
+#     return db.query(models.Video).filter(models.Video.LectureName == LectureName).all()
 
-def get_videos_by_LecturerID(db: Session, LecturerID: int):
-    return db.query(models.Video).filter(models.Video.LecturerID == LecturerID).all()
+# def get_videos_by_LecturerID(db: Session, LecturerID: int):
+#     return db.query(models.Video).filter(models.Video.LecturerID == LecturerID).all()
 
-def get_videos_by_StudentID(db: Session, StudentID: int):
-    return db.query(models.Video).filter(models.Video.StudentID == StudentID).all()
+# def get_videos_by_StudentID(db: Session, StudentID: int):
+#     return db.query(models.Video).filter(models.Video.StudentID == StudentID).all()
 
 def get_all_videos(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Video).offset(skip).limit(limit).all()
 
-
 def create_video(db: Session, video: schemas.VideoBase, file: UploadFile, uuid:str, path:str):
     print("in create_video")
-    vdo = models.Video(uuid=uuid, VideoName=file.filename, VideoPath = path, LectureName=video.LectureName, CourseName = video.CourseName, LecturerID=video.LecturerID, StudentID=video.StudentID)
+    vdo = models.Video(uuid=uuid, VideoName=file.filename, VideoPath = path, LectureName=video.LectureName, CourseName = video.CourseName, LecturerID=video.LecturerID, GroupNumber=video.GroupNumber)
     db.add(vdo)
     db.commit()
     db.refresh(vdo)
@@ -46,13 +45,22 @@ def create_student(db: Session, student: schemas.StudentBase):
     return stu
 
 def create_lecturer(db: Session, lecturer: schemas.LecturerBase):
-    print("in create_student")
+    print("in create_lecturer")
     lec = models.Lecturer(LecturerID=lecturer.LecturerID, Firstname=lecturer.Firstname, Lastname=lecturer.Lastname)
     db.add(lec)
     db.commit()
     db.refresh(lec)
     print("lecturer is successfully created")
     return lec
+
+def assign_groups(db: Session, group: schemas.GroupBase):
+    gr = models.StudentGroup(GroupNumber=group.GroupNumber, StudentID = group.StudentID)
+    db.add(gr)
+    db.commit()
+    db.refresh(gr)
+    print("student is successfully assigned to group")
+    return gr
+    
 # def get_videos(db: Session, skip: int = 0, limit: int = 100):
 #     return db.query(models.Video).offset(skip).limit(limit).all()
 

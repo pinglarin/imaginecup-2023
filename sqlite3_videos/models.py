@@ -12,13 +12,20 @@ class Video(Base):
     VideoPath = Column(String, nullable=False)
     LectureName = Column(String, nullable=False)
     CourseName = Column(String, nullable=False)
-    LecturerID = Column(Integer, ForeignKey("lecturer.LecturerID"))
-    StudentID = Column(Integer, ForeignKey("student.StudentID"))
+    LecturerID = Column(Integer, ForeignKey("lecturer.LecturerID"), nullable=False)
+    GroupNumber = Column(Integer, ForeignKey("student_group.GroupNumber"), nullable=False)
 
-    vid_lecturer = relationship("Lecturer", foreign_keys=[LecturerID])
-    vid_stu = relationship("Student", foreign_keys=[StudentID])
+    video_lecturer = relationship("Lecturer", foreign_keys=[LecturerID])
+    video_group = relationship("StudentGroup", foreign_keys=[GroupNumber])
    
-    
+class StudentGroup(Base):
+    __tablename__ = "student_group"
+
+    GroupNumber = Column(Integer, primary_key=True)
+    StudentID = Column(Integer, ForeignKey("student.StudentID"), nullable=False)
+
+    student = relationship("Student", foreign_keys=[StudentID])
+
 class Student(Base):
     __tablename__ = "student"
 

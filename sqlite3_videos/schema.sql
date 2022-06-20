@@ -6,11 +6,11 @@ CREATE TABLE video (
     VideoPath TEXT NOT NULL,
     LectureName TEXT NOT NULL,
     CourseName TEXT NOT NULL,
-    LecturerID INT,
-    StudentID INT,
+    LecturerID INT NOT NULL,
+    GroupNumber INT NOT NULL,
 
-    FOREIGN KEY (StudentID)
-        REFERENCES student (StudentID),
+    FOREIGN KEY (GroupNumber)
+        REFERENCES student_group (GroupNumber),
 
     FOREIGN KEY (LecturerID)
         REFERENCES lecturer (LecturerID)
@@ -39,18 +39,15 @@ CREATE TABLE frame ( -- should there be metadata?
         REFERENCES OCR (uuid)
 );
 
--- DROP TABLE IF EXISTS student_group;
+DROP TABLE IF EXISTS student_group;
 
--- CREATE TABLE student_group (
---     GroupNumber INT PRIMARY KEY,
---     StudentID INT NOT NULL,
+CREATE TABLE student_group (
+    GroupNumber INT NOT NULL ,
+    StudentID INT NOT NULL,
 
---     FOREIGN KEY (GroupNumber)
---         REFERENCES video (GroupNumber),
-
---     FOREIGN KEY (StudentID)
---         REFERENCES student (StudentID)
--- );
+    FOREIGN KEY (StudentID)
+        REFERENCES student (StudentID)
+);
 
 DROP TABLE IF EXISTS student;
 
