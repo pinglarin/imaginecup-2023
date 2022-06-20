@@ -30,7 +30,7 @@ import Presentation from "layouts/pages/presentation";
 import routes from "routes";
 
 // Dragon s routes
-// import Editor from "./pages/LandingPages/Editor/index";
+import Editor from "./pages/LandingPages/Editor/index";
 import VideoPlayer from "./pages/LandingPages/UploadPage/index";
 
 export default function App() {
@@ -61,7 +61,7 @@ export default function App() {
       <Routes>
         {getRoutes(routes)}
         <Route path="/presentation" element={<Presentation />} />
-        {/* <Route path="/UpdateInfo/:id" element={<Editor />} /> */}
+        <Route path="/UpdateInfo/:id" element={<Editor />} />
         <Route path="/VideoPlayer/:id" element={<VideoPlayer />} />
         <Route path="*" element={<Navigate to="/presentation" />} />
       </Routes>
