@@ -5,12 +5,12 @@ from database import SessionLocal, engine
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, File, Form, UploadFile
 from fastapi.encoders import jsonable_encoder
-from schemas import VideoBase, VideoUpdate
+from schemas import VideoBase, StudentBase, LecturerBase
 import uvicorn
 import uuid
 from databases import Database
 from fastapi import FastAPI
-
+from fastapi.responses import FileResponse, StreamingResponse
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -104,15 +104,6 @@ def read_videos(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     print("in getallvideos")
     videos = crud.get_all_videos(db, skip=skip, limit=limit)
     return videos
-    
-@app.get("/getpath")
-async def fetch_path(uuid: str):
-    print(uuid)
-    vuuid = f'"{uuid}"'
-    print(vuuid)
-    query = "SELECT VideoPath FROM video WHERE uuid={}".format(str(vuuid))
-    results = database.fetch_all(query=query)
-    return await results
 
 @app.post("/uploadvideo")
 async def upload_video(file: UploadFile, video: schemas.VideoBase = Depends(VideoBase.send_form), db: Session = Depends(get_db)):
@@ -122,11 +113,11 @@ async def upload_video(file: UploadFile, video: schemas.VideoBase = Depends(Vide
     if db_vdo:
         raise HTTPException(status_code=400, detail="Video already exists in database!")
     print("about to input into database >> filename:", file.filename)
-    with open(f'../React_part/src/components/PlayerVideo_page/Player_part/uploadedVideos/{vuuid}.mp4', 'wb') as uploadvideo:
+    with open(f'uploadedVideos/{vuuid}.mp4', 'wb') as uploadvideo:
         content = await file.read()
         uploadvideo.write(content)
         # VideoPath = f'C:/Users/Aekky/OneDrive - Mahidol University/Desktop/VS Code work/imaginecup-2023/React_part/src/components/PlayerVideo_page/Player_part/uploadedVideos/{vuuid}.mp4'
-        VideoPath = f'React_part/src/components/PlayerVideo_page/Player_part/uploadedVideos/{vuuid}.mp4' # is this type of path correct??
+        VideoPath = f'uploadedVideos/{vuuid}.mp4' # is this type of path correct??
     crud.create_video(db=db, video=video, file=file, uuid=vuuid, path = VideoPath)
     return "Success"
 # To be done: if function returns success, the user is notified of it, and the opposite goes for failed attempt.
@@ -154,16 +145,65 @@ async def delete_video(uuid: str, db: Session = Depends(get_db)):
     print("Video is successfully deleted")
     return "success"
 
+@app.get("/teststream") # http://127.0.0.1:8000/teststream
+async def test_stream():
+    return FileResponse('uploadedVideos/27c0d980-cc06-4926-b556-42602af15c31.mp4', media_type="video/mp4")
 
-# @app.get("/vid")
-# def iterfile():  # 
-#     with open(r"comvideos\comVidCutMP4.mp4", mode="rb") as file_like:  # 
-#         yield from file_like  # 
+@app.get("/stream")
+async def stream_video(uuid: str):
+    vuuid = f'"{uuid}"'
+    print(vuuid)
+    query = "SELECT VideoPath FROM video WHERE uuid={}".format(str(vuuid))
+    path = str(await database.fetch_one(query=query))
+    path = path[2:-3]
+    print(path)
+    return FileResponse(path, media_type="video/mp4")
 
-#     return StreamingResponse(iterfile(), media_type="video/mp4")
+@app.post("/test")
+async def fetch_data(id: int):
+    query = "SELECT LectureName FROM video WHERE ID={}".format(str(id))
+    results = await database.fetch_all(query=query)
+    return  results
 
+@app.post("/signup_student")
+async def signupStudent(student: schemas.StudentBase = Depends(StudentBase.send_form), db: Session = Depends(get_db)):
+    # db_vdo = crud.get_video_by_ID(db, uuid=vuuid)
+    # if db_vdo:
+    #     raise HTTPException(status_code=400, detail="Video already exists in database!")
+    crud.create_student(db=db, student=student)
+    return "Success"
 
+@app.post("/signup_lecturer")
+async def signupLecturer(lecturer: schemas.LecturerBase = Depends(LecturerBase.send_form), db: Session = Depends(get_db)):
+    # db_vdo = crud.get_video_by_ID(db, uuid=vuuid)
+    # if db_vdo:
+    #     raise HTTPException(status_code=400, detail="Video already exists in database!")
+    crud.create_lecturer(db=db, lecturer=lecturer)
+    return "Success"
 
+@app.get("/get/coursename")
+async def get_from_coursename(coursename: str):
+    query = "SELECT * FROM video WHERE CourseName = :CourseName"
+    rows = await database.fetch_all(query=query, values={"CourseName": coursename})
+    return rows
+
+@app.get("/get/lecturename")
+async def get_from_lecturename(lecturename: str):
+    query = "SELECT * FROM video WHERE LectureName = :LectureName"
+    rows = await database.fetch_all(query=query, values={"LectureName": lecturename})
+    return rows
+
+@app.get("/get/lectures_of_lecturer")
+async def get_lectures_of_lecturer(firstname: str):
+    query = "SELECT * FROM video LEFT JOIN lecturer ON (video.LecturerID = lecturer.LecturerID) WHERE lecturer.Firstname = :Firstname"
+    rows = await database.fetch_all(query=query, values={"Firstname": firstname})
+    return rows
+
+@app.get("/get/viewed_videos")
+async def get_viewed_videos(firstname: str):
+    query = "SELECT * FROM video LEFT JOIN student ON (video.StudentID = student.StudentID) WHERE student.Firstname = :Firstname"
+    rows = await database.fetch_all(query=query, values={"Firstname": firstname})
+    return rows
 #------------------------------------------------------------------------------------------------------------------------------------------
 #OLD UNUSED CODE
 # @app.post("/video/post", response_model=schemas.Video)
@@ -175,6 +215,7 @@ async def delete_video(uuid: str, db: Session = Depends(get_db)):
 #         raise HTTPException(status_code=400, detail="Video already exists in database!")
 #     print("crud.create_video")
 #     return crud.create_video(db=db, video=video)
+
 
 #original function
 # @app.post("/uploadfile")

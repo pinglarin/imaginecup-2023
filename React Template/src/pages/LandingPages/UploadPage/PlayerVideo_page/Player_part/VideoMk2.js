@@ -17,15 +17,16 @@ export default function VideoMk2() {
   // const Myplayer = {};
   const [state /* , setstate */] = useState({
     video: {
-      // sources: [
-      //   {
-      //     // src: "http://vjs.zencdn.net/v/oceans.mp4",
-      //     // src: Clip,
-      //     src: "http://127.0.0.1:8000/getpath?uuid=65ef5523-be4f-4533-bc19-a3abe83c0664",
-      //     type: "video/mp4",
-      //   },
-      // ],
-      src: `http://127.0.0.1:8000/getpath?uuid=${UUID}`,
+      sources: [
+        {
+          // src: "http://vjs.zencdn.net/v/oceans.mp4",
+          // src: Clip,
+          // src: "http://127.0.0.1:8000/stream?uuid=8ab5d6e3-16a7-4205-a47a-152151bed883",
+          // src: "http://127.0.0.1:8000/stream?uuid=757bb78b-b9a4-4574-aae4-bf47c641b468",
+          src: "https://sto010.akamai-cdn-content.com/tysxeebv4w66j6cdaa6brqcbgrshewemx7c2pvq7kpmqzvx4lo3vwrj2ptkq/sugar-sugar-rune-episode-1.mp4",
+          type: "video/mp4",
+        },
+      ],
       poster:
         "https://cdn.discordapp.com/attachments/595430234736689173/923864093511798814/167a9d14e5017ffa2d39ac5567f37d30-db6wtbu.jpg",
     },

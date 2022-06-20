@@ -32,6 +32,9 @@ import ExampleCard from "pages/Presentation/components/ExampleCard";
 // Data
 import data from "pages/Presentation/sections/data/designBlocksData";
 
+import post2 from "assets/images/examples/testimonial-6-3.jpg";
+import TransparentBlogCard from "examples/Cards/BlogCards/TransparentBlogCard";
+
 function DesignBlocks() {
   console.log("=== data test ===");
   console.log(data);
@@ -39,15 +42,29 @@ function DesignBlocks() {
     <Grid container spacing={3} sx={{ mb: 10 }} key={title}>
       <Grid item xs={12} lg={3}>
         <MKBox position="sticky" top="100px" pb={{ xs: 2, lg: 6 }}>
-          <MKTypography variant="h3" fontWeight="bold" mb={1}>
+          {/* <MKTypography variant="h3" fontWeight="bold" mb={1}>
             {title}
           </MKTypography>
           <MKTypography variant="body2" fontWeight="regular" color="secondary" mb={1} pr={2}>
             {description}
-          </MKTypography>
+          </MKTypography> */}
+          <TransparentBlogCard
+            image={post2}
+            title={title}
+            description={description}
+            action={{
+              type: "internal",
+              route: "#", // to be changed
+              color: "info",
+              label: "read more",
+            }}
+          />
         </MKBox>
       </Grid>
       <Grid item xs={12} lg={9}>
+        <MKTypography variant="h4" fontWeight="bold" mb={1}>
+          Lecture List
+        </MKTypography>
         <Grid container spacing={3}>
           {items.map(({ image, name, count, route, pro }) => (
             <Grid item xs={12} md={4} sx={{ mb: 2 }} key={name}>
@@ -86,7 +103,7 @@ function DesignBlocks() {
             sx={{ mb: 2 }}
           />
           <MKTypography variant="h2" fontWeight="bold">
-            Huge collection of sections
+            All course
           </MKTypography>
           <MKTypography variant="body1" color="text">
             We have created multiple options for you to put together and customise into pixel

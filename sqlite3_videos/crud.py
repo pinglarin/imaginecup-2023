@@ -28,7 +28,7 @@ def get_all_videos(db: Session, skip: int = 0, limit: int = 100):
 
 def create_video(db: Session, video: schemas.VideoBase, file: UploadFile, uuid:str, path:str):
     print("in create_video")
-    vdo = models.Video(uuid=uuid, VideoName=file.filename, VideoPath = path, LectureName=video.LectureName, LecturerID=video.LecturerID, StudentID=video.StudentID)
+    vdo = models.Video(uuid=uuid, VideoName=file.filename, VideoPath = path, LectureName=video.LectureName, CourseName = video.CourseName, LecturerID=video.LecturerID, StudentID=video.StudentID)
     db.add(vdo)
     db.commit()
     db.refresh(vdo)
@@ -36,20 +36,23 @@ def create_video(db: Session, video: schemas.VideoBase, file: UploadFile, uuid:s
     print("Video is successfully uploaded")
     return vdo
 
-def getPath(db: Session, uuid: str):
-    video = get_video_by_ID(db, uuid)
-    return db.query(models.Video).filter(models.Video.VideoPath == VideoPath).first()
-#def update_video
+def create_student(db: Session, student: schemas.StudentBase):
+    print("in create_student")
+    stu = models.Student(StudentID=student.StudentID, Firstname=student.Firstname, Lastname=student.Lastname)
+    db.add(stu)
+    db.commit()
+    db.refresh(stu)
+    print("student is successfully created")
+    return stu
 
-
-
-
-
-   
-def get_video(db: Session, uuid: str):
-    return db.query(models.Video).filter(models.Video.uuid == uuid).first()
-
-
+def create_lecturer(db: Session, lecturer: schemas.LecturerBase):
+    print("in create_student")
+    lec = models.Lecturer(LecturerID=lecturer.LecturerID, Firstname=lecturer.Firstname, Lastname=lecturer.Lastname)
+    db.add(lec)
+    db.commit()
+    db.refresh(lec)
+    print("lecturer is successfully created")
+    return lec
 # def get_videos(db: Session, skip: int = 0, limit: int = 100):
 #     return db.query(models.Video).offset(skip).limit(limit).all()
 

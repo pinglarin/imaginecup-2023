@@ -21,6 +21,7 @@ class VideoBase(BaseModel):
     # uuid: str
     # VideoName: str
     LectureName: str
+    CourseName: str
     LecturerID: int
     StudentID: int
     class Config:
@@ -30,62 +31,47 @@ class VideoBase(BaseModel):
     def send_form(
         cls,
         LectureName: str = Form(...),
+        CourseName: str = Form(...),
         LecturerID: int = Form(...),
         StudentID: int = Form(...)
     ) -> Self:
-        return cls(LectureName=LectureName, LecturerID=LecturerID, StudentID=StudentID)
-
-# class VideoReturn(VideoBase):
-#     uuid: str
-#     VideoName: str
+        return cls(LectureName=LectureName, CourseName=CourseName, LecturerID=LecturerID, StudentID=StudentID)
 
 class VideoReturn(VideoBase):
     uuid: str
     VideoName: str
 
-
-def as_form(cls: Type[BaseModel]):
-    new_parameters = []
-
-    for field_name, model_field in cls.__fields__.items():
-        model_field: ModelField  # type: ignore
-
-        new_parameters.append(
-             inspect.Parameter(
-                 model_field.alias,
-                 inspect.Parameter.POSITIONAL_ONLY,
-                 default=Form(...) if not model_field.required else Form(model_field.default),
-                 annotation=model_field.outer_type_,
-             )
-         )
-
-    async def as_form_func(**data):
-        return cls(**data)
-
-    sig = inspect.signature(as_form_func)
-    sig = sig.replace(parameters=new_parameters)
-    as_form_func.__signature__ = sig  # type: ignore
-    setattr(cls, 'as_form', as_form_func)
-    print("return cls")
-    return cls
-    
-    
-@as_form
-class VideoUpdate(BaseModel):
-    VideoName: Optional[str] = None
-    LectureName: Optional[str] = None
-    LecturerID: Optional[int] = None
-    StudentID: Optional[int] = None
+class StudentBase(BaseModel):
+    StudentID: int
+    Firstname: str
+    Lastname: str
+    class Config:
+        orm_mode = True
 
     @classmethod
-    def as_form(
-            cls,
-            VideoName: Optional[str] = Form("VideoReturn.return_VideoName"), #VideoName: Optional[str] = Form(VideoReturn.return_VideoName),
-            LectureName: Optional[str] = Form("smth"),
-            LecturerID: Optional[int] = Form(1),
-            StudentID: Optional[int] = Form(1)
-        ) :
-        return cls(VideoName=VideoName, LectureName=LectureName, LecturerID=LecturerID, StudentID=StudentID)
+    def send_form(
+        cls,
+        StudentID: int = Form(...),
+        Firstname: str = Form(...),
+        Lastname: str = Form(...),
+    ) -> Self:
+        return cls(StudentID=StudentID, Firstname=Firstname, Lastname=Lastname)
+
+class LecturerBase(BaseModel):
+    LecturerID: int
+    Firstname: str
+    Lastname: str
+    class Config:
+        orm_mode = True
+
+    @classmethod
+    def send_form(
+        cls,
+        LecturerID: int = Form(...),
+        Firstname: str = Form(...),
+        Lastname: str = Form(...),
+    ) -> Self:
+        return cls(LecturerID=LecturerID, Firstname=Firstname, Lastname=Lastname)
 
 
     # @classmethod
