@@ -114,6 +114,47 @@ async def displayFrame(frameNum):
     res, im_png = cv2.imencode(".png", frameImg)
     return StreamingResponse(io.BytesIO(im_png.tobytes()), media_type="image/png")
 
+@app.get("/vidOCR")
+async def vidOCR():
+    json_list = []
+    count = 0
+    cap = cv2.VideoCapture('/Users/pinglarin/Documents/script_code/imaginecup-2023/ocr-speech/media_files/comVidCutMP4_trim_2.mp4')
+    total_frame = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    print("total frame count:", total_frame)
+    if (total_frame <= 0): 
+        print("Video Not Found")
+    while cap.isOpened():
+        ret, frame = cap.read()
+        # if frame is read correctly ret is True
+        if not ret:
+            print("Can't receive frame (stream end?). Exiting ...")
+            break
+        # gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY) 
+        # cv2.imshow('frame') # , gray
+        b_br = cvtVidcapToIOBuffer(frame)
+        frame_ocr_result = localocr(b_br)
+        frame_result_loaded = json.loads(frame_ocr_result)
+        json_list.append(frame_result_loaded)
+        print("current frame:", count)
+        count += 100
+        cap.set(cv2.CAP_PROP_POS_FRAMES, count)
+        
+        if cv2.waitKey(1) == ord('q'):
+            break
+    cap.release()
+    json_output = json.dumps(json_list)
+    return Response(content=json_output, media_type="application/json")
+
+def cvtVidcapToIOBuffer(frameImg):
+    is_success, buffer = cv2.imencode(".jpg", frameImg)
+    io_buf = io.BytesIO(buffer)
+    # print(io_buf, "C")
+    b_handle = io_buf
+    b_handle.seek(0)
+    # print(b_handle, "C.5")
+    b_br = io.BufferedReader(b_handle)
+    return b_br
+
 @app.get("/frameOCR/{frameNum}")
 async def frameOCR(frameNum):
     # uuid, video_name, lecture_name, studentid, lecturerid
@@ -126,32 +167,26 @@ async def frameOCR(frameNum):
     vidcap.set(1, frameNum-1)
     res, frameImg = vidcap.read()
     # print(frameImg, "A")
-    is_success, buffer = cv2.imencode(".jpg", frameImg)
-    # print(buffer, "B")
     
-    io_buf = io.BytesIO(buffer)
-    # print(io_buf, "C")
-    b_handle = io_buf
-    b_handle.seek(0)
-    # print(b_handle, "C.5")
-    b_br = io.BufferedReader(b_handle)
+    b_br = cvtVidcapToIOBuffer(frameImg)
     # print(b_br, "C.9")
 
     ret = localocr(b_br)
-    # print(ret)
+    
+    ############# convert into short json ver.
     data = json.loads(ret)
-    created_time = data['created_date_time']
-    all_sentence = ""
-    for line in data['analyze_result']['read_results'][0]['lines']:
-        all_sentence += line['text'] + " "
-    print(all_sentence)
-    output = {}
-    output['created_time'] = created_time
-    output['sentences'] = all_sentence
-    json_output = json.dumps(output)
+    # created_time = data['created_date_time']
+    # all_sentence = ""
+    # for line in data['analyze_result']['read_results'][0]['lines']:
+    #     all_sentence += line['text'] + " "
+    # print(all_sentence)
+    # output = {}
+    # output['created_time'] = created_time
+    # output['sentences'] = all_sentence
+    # json_output = json.dumps(output)
     # print(data['analyze_result']['read_results'])
 
-    return Response(content=json_output, media_type="application/json")
+    return Response(content=ret, media_type="application/json")
 
     # res, im_png = cv2.imencode(".png", frameImg)
     # return StreamingResponse(io.BytesIO(im_png.tobytes()), media_type="image/png")
