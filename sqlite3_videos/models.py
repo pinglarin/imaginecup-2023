@@ -13,16 +13,22 @@ class Video(Base):
     LectureName = Column(String, nullable=False)
     CourseName = Column(String, nullable=False)
     LecturerID = Column(Integer, ForeignKey("lecturer.LecturerID"), nullable=False)
-    GroupNumber = Column(Integer, ForeignKey("student_group.GroupNumber"), nullable=False)
 
     video_lecturer = relationship("Lecturer", foreign_keys=[LecturerID])
+
+class VideoGroup(Base):
+    __tablename__ = "video_group"
+    uuid = Column(String, ForeignKey("video.uuid"), nullable=False ,primary_key=True)
+    GroupNumber = Column(Integer, ForeignKey("student_group.GroupNumber"), nullable=False, primary_key=True)
+
+    video_group_uuid = relationship("Video", foreign_keys=[uuid])
     video_group = relationship("StudentGroup", foreign_keys=[GroupNumber])
-   
+
 class StudentGroup(Base):
     __tablename__ = "student_group"
 
-    GroupNumber = Column(Integer, primary_key=True)
-    StudentID = Column(Integer, ForeignKey("student.StudentID"), nullable=False)
+    GroupNumber = Column(Integer, nullable=False, primary_key=True)
+    StudentID = Column(Integer, ForeignKey("student.StudentID"), nullable=False, primary_key=True)
 
     student = relationship("Student", foreign_keys=[StudentID])
 

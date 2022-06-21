@@ -27,7 +27,7 @@ def get_all_videos(db: Session, skip: int = 0, limit: int = 100):
 
 def create_video(db: Session, video: schemas.VideoBase, file: UploadFile, uuid:str, path:str):
     print("in create_video")
-    vdo = models.Video(uuid=uuid, VideoName=file.filename, VideoPath = path, LectureName=video.LectureName, CourseName = video.CourseName, LecturerID=video.LecturerID, GroupNumber=video.GroupNumber)
+    vdo = models.Video(uuid=uuid, VideoName=file.filename, VideoPath = path, LectureName=video.LectureName, CourseName = video.CourseName, LecturerID=video.LecturerID)
     db.add(vdo)
     db.commit()
     db.refresh(vdo)
@@ -53,14 +53,22 @@ def create_lecturer(db: Session, lecturer: schemas.LecturerBase):
     print("lecturer is successfully created")
     return lec
 
-def assign_groups(db: Session, group: schemas.GroupBase):
+def assign_groups(db: Session, group: schemas.StudentGroupBase):
     gr = models.StudentGroup(GroupNumber=group.GroupNumber, StudentID = group.StudentID)
     db.add(gr)
     db.commit()
     db.refresh(gr)
     print("student is successfully assigned to group")
     return gr
-    
+
+
+def video_group_assignment(db: Session, group: schemas.VideoGroupBase):
+    gr = models.VideoGroup(uuid=group.uuid, GroupNumber=group.GroupNumber)
+    db.add(gr)
+    db.commit()
+    db.refresh(gr)
+    print("video has been added groups")
+    return gr
 # def get_videos(db: Session, skip: int = 0, limit: int = 100):
 #     return db.query(models.Video).offset(skip).limit(limit).all()
 

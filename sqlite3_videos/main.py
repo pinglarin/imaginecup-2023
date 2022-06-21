@@ -5,7 +5,7 @@ from database import SessionLocal, engine
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, File, Form, UploadFile
 from fastapi.encoders import jsonable_encoder
-from schemas import VideoBase, StudentBase, LecturerBase, GroupBase
+from schemas import VideoBase, StudentBase, LecturerBase, VideoGroupBase,StudentGroupBase
 import uvicorn
 import uuid
 from databases import Database
@@ -228,7 +228,7 @@ async def get_lectures_of_lecturer(firstname: str):
 #     return rows
 
 @app.post("/group_students")
-async def groupStudents(group: schemas.GroupBase = Depends(GroupBase.send_form), db: Session = Depends(get_db)):
+async def groupStudents(group: schemas.StudentGroupBase = Depends(StudentGroupBase.send_form), db: Session = Depends(get_db)):
     # db_vdo = crud.get_video_by_ID(db, uuid=vuuid)
     # if db_vdo:
     #     raise HTTPException(status_code=400, detail="Video already exists in database!")
@@ -240,6 +240,14 @@ async def students_in_group(GroupNumber: int):
     query = "SELECT * FROM student INNER JOIN student_group ON (student.StudentID = student_group.StudentID) WHERE student_group.GroupNumber = :GroupNumber"
     rows = await database.fetch_all(query=query, values={"GroupNumber": GroupNumber})
     return rows
+
+@app.post("/video_group")
+async def video_group(group: schemas.VideoGroupBase = Depends(VideoGroupBase.send_form), db: Session = Depends(get_db)):
+    # db_vdo = crud.get_video_by_ID(db, uuid=vuuid)
+    # if db_vdo:
+    #     raise HTTPException(status_code=400, detail="Video already exists in database!")
+    crud.video_group_assignment(db=db, group=group)
+    return "Success"
 
 # @app.get("/get/video_permission/students")
 # async def students_in_group(GroupNumber: int):

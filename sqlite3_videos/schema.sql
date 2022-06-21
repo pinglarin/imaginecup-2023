@@ -7,13 +7,23 @@ CREATE TABLE video (
     LectureName TEXT NOT NULL,
     CourseName TEXT NOT NULL,
     LecturerID INT NOT NULL,
-    GroupNumber INT NOT NULL,
-
-    FOREIGN KEY (GroupNumber)
-        REFERENCES student_group (GroupNumber),
 
     FOREIGN KEY (LecturerID)
         REFERENCES lecturer (LecturerID)
+);
+
+DROP TABLE IF EXISTS video_group;
+
+CREATE TABLE video_group (
+    uuid TEXT NOT NULL,
+    GroupNumber INT NOT NULL,
+
+    PRIMARY KEY (uuid, GroupNumber)
+    FOREIGN KEY (uuid)
+        REFERENCES video (uuid),
+
+    FOREIGN KEY (GroupNumber)
+        REFERENCES student_group (GroupNumber)
 );
 
 DROP TABLE IF EXISTS OCR;
@@ -45,6 +55,7 @@ CREATE TABLE student_group (
     GroupNumber INT NOT NULL ,
     StudentID INT NOT NULL,
 
+    PRIMARY KEY (GroupNumber, StudentID)
     FOREIGN KEY (StudentID)
         REFERENCES student (StudentID)
 );

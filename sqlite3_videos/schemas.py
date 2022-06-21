@@ -22,7 +22,6 @@ class VideoBase(BaseModel):
     LectureName: str
     CourseName: str
     LecturerID: int
-    GroupNumber: int
     class Config:
         orm_mode = True
 
@@ -32,15 +31,28 @@ class VideoBase(BaseModel):
         LectureName: str = Form(...),
         CourseName: str = Form(...),
         LecturerID: int = Form(...),
-        GroupNumber: int = Form(...)
     ) -> Self:
-        return cls(LectureName=LectureName, CourseName=CourseName, LecturerID=LecturerID, GroupNumber=GroupNumber)
+        return cls(LectureName=LectureName, CourseName=CourseName, LecturerID=LecturerID)
 
 class VideoReturn(VideoBase):
     uuid: str
     VideoName: str
 
-class GroupBase(BaseModel):
+class VideoGroupBase(BaseModel):
+    uuid: str
+    GroupNumber: int
+    class Config:
+        orm_mode = True
+
+    @classmethod # maybe change input format later
+    def send_form(
+        cls,
+        uuid: str = Form(...),
+        GroupNumber: int = Form(...),
+    ) -> Self:
+        return cls(uuid=uuid, GroupNumber=GroupNumber)
+
+class StudentGroupBase(BaseModel):
     GroupNumber: int
     StudentID: int
     class Config:
