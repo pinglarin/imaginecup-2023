@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 import { useModal } from "react-hooks-use-modal";
+// import ReactDOM from "react-dom"
 
 // @mui material components
 import Container from "@mui/material/Container";
@@ -25,7 +26,7 @@ function DragUploader() {
 
   const [LectureName, setLectureName] = useState("");
   const [LecturerID, setLecturerID] = useState("");
-  const [StudentID, setStudentID] = useState(""); // removed event because error: 'event' is defined but never used
+  const [CourseName, setCourseName] = useState(""); // removed event because error: 'event' is defined but never used
 
   const [ModalSuccess, openSuccess, closeSuccess] = useModal("root", {
     preventScroll: true,
@@ -44,8 +45,8 @@ function DragUploader() {
     formData.append("uuid", uuidv4());
     formData.append("LectureName", LectureName); // formData.append("lecture_name", Lecture_name);
     formData.append("LecturerID", LecturerID); // formData.append("lecturer_ID", Lecturer_ID);
-    formData.append("StudentID", StudentID); // formData.append("student_ID",Student_ID);
-    if (uploadfile.files[0] && LectureName && LecturerID && StudentID) {
+    formData.append("CourseName", CourseName); // formData.append("student_ID",Student_ID);
+    if (uploadfile.files[0] && LectureName && LecturerID && CourseName) {
       axios
         .post(`http://localhost:8000/uploadvideo/`, formData, {
           headers: {
@@ -72,7 +73,7 @@ function DragUploader() {
     console.log(formData.get("uuid"));
     console.log(formData.get("LectureName"));
     console.log(formData.get("LecturerID"));
-    console.log(formData.get("StudentID"));
+    console.log(formData.get("CourseName"));
   };
   return (
     <MKBox component="section" py={12}>
@@ -104,10 +105,9 @@ function DragUploader() {
                 <Grid item xs={12} md={6}>
                   <MKInput
                     variant="standard"
-                    type="number"
-                    label="Lecturer ID"
-                    placeholder="Enter Lecturer ID"
-                    onChange={(e) => setLecturerID(e.target.value)}
+                    label="Course Name"
+                    placeholder="Enter CourseName"
+                    onChange={(e) => setCourseName(e.target.value)}
                     fullWidth
                   />
                 </Grid>
@@ -115,9 +115,9 @@ function DragUploader() {
                   <MKInput
                     variant="standard"
                     type="number"
-                    label="Student ID"
-                    placeholder="Enter Student ID"
-                    onChange={(e) => setStudentID(e.target.value)}
+                    label="Lecturer ID"
+                    placeholder="Enter Lecturer ID"
+                    onChange={(e) => setLecturerID(e.target.value)}
                     fullWidth
                   />
                 </Grid>
@@ -143,7 +143,7 @@ function DragUploader() {
           image="https://c.tenor.com/xVfFIHxAzW4AAAAC/success.gif"
           name="Notification"
           position={{ color: "success", label: "Upload Success!" }}
-          description=""
+          description=" "
         />
         <MKButton
           onClick={closeSuccess}

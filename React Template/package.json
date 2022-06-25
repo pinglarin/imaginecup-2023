@@ -46,6 +46,9 @@
     "react-syntax-highlighter": "15.4.5",
     "uuid": "^8.3.2",
     "video.js": "^7.19.2",
+    "videojs-contrib-quality-levels": "^2.1.0",
+    "videojs-hls-quality-selector": "^1.1.4",
+    "videojs-http-source-selector": "^1.1.6",
     "videojs-markers": "^1.0.1",
     "web-vitals": "1.0.1"
   },

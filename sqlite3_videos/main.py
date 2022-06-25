@@ -1,16 +1,21 @@
-from fastapi import Depends, FastAPI, HTTPException, FastAPI, File, UploadFile
+from fastapi import Depends, FastAPI, HTTPException, File, UploadFile
 from sqlalchemy.orm import Session
 import crud, models, schemas
 from database import SessionLocal, engine
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi import FastAPI, File, Form, UploadFile
 from fastapi.encoders import jsonable_encoder
 from schemas import VideoBase, StudentBase, LecturerBase, VideoGroupBase,StudentGroupBase
 import uvicorn
 import uuid
 from databases import Database
-from fastapi import FastAPI
 from fastapi.responses import FileResponse, StreamingResponse
+from pathlib import Path
+from fastapi import FastAPI
+from fastapi import Request, Response
+from fastapi.responses import StreamingResponse
+from fastapi import Header
+from fastapi.templating import Jinja2Templates
+import os
 
 from speech_ocr import *
 
@@ -151,41 +156,38 @@ async def delete_video(uuid: str, db: Session = Depends(get_db)):
     print("Video is successfully deleted")
     return "success"
 
-@app.get("/teststream") # http://127.0.0.1:8000/teststream
-async def test_stream():
-    return FileResponse('uploadedVideos/1ce89b45-1ab6-478c-b85f-91233176514e.mp4', media_type="video/mp4")
-
-@app.get("/stream")
-async def stream_video(uuid: str):
+@app.get("/vid")
+async def video_endpoint(uuid: str, range: str = Header(None)):
+    CHUNK_SIZE = 1024*1024
     vuuid = f'"{uuid}"'
     print(vuuid)
     query = "SELECT VideoPath FROM video WHERE uuid={}".format(str(vuuid))
-    path = str(await database.fetch_one(query=query))
-    path = path[2:-3]
-    print(path)
-    return FileResponse(path, media_type="video/mp4")
-
-
-@app.get("/stream2")
-async def main(uuid: str):
-    vuuid = f'"{uuid}"'
-    print(vuuid)
-    query = "SELECT VideoPath FROM video WHERE uuid={}".format(str(vuuid))
-    path = str(await database.fetch_one(query=query))
-    path = path[2:-3]
-    print(path)
-    def iterfile():  # 
-        with open(path, mode="rb") as file_like:  # 
-            yield from file_like  # 
-
-    return StreamingResponse(iterfile(), media_type="video/mp4")
-
-
-@app.post("/test")
-async def fetch_data(id: int):
-    query = "SELECT LectureName FROM video WHERE ID={}".format(str(id))
-    results = await database.fetch_all(query=query)
-    return  results
+    video_path = str(await database.fetch_one(query=query))
+    video_path = Path(video_path[2:-3])
+    print(video_path)
+    if os.path.exists(video_path):
+        print("found")
+    filesize = str(video_path.stat().st_size)
+    if(range):
+        start, end = range.replace("bytes=", "").split("-")
+        start = int(start)
+        end = int(end) if end else start + CHUNK_SIZE
+        chunksize = (end-start) + 1
+        with open(video_path, "rb") as video:
+            video.seek(start)
+            data = video.read(end - start)
+            headers = {
+                'Content-Range': f'bytes {str(start)}-{str(end)}/{filesize}',
+                'Accept-Ranges': 'bytes',
+            }
+    else:
+        with open(video_path, "rb") as video:
+            video.seek(0)
+            data = video.read(CHUNK_SIZE)
+            headers = {
+                'Content-Length': str(CHUNK_SIZE),
+            }
+    return Response(data, status_code=206, headers=headers, media_type="video/mp4")
 
 @app.post("/signup_student")
 async def signupStudent(student: schemas.StudentBase = Depends(StudentBase.send_form), db: Session = Depends(get_db)):
@@ -221,6 +223,74 @@ async def get_lectures_of_lecturer(firstname: str):
     rows = await database.fetch_all(query=query, values={"Firstname": firstname})
     return rows
 
+# @app.get("/teststream") # http://127.0.0.1:8000/teststream
+# async def test_stream():
+#     return FileResponse('uploadedVideos/1ce89b45-1ab6-478c-b85f-91233176514e.mp4', media_type="video/mp4")
+
+# @app.get("/stream")
+# async def stream_video(uuid: str):
+#     vuuid = f'"{uuid}"'
+#     print(vuuid)
+#     query = "SELECT VideoPath FROM video WHERE uuid={}".format(str(vuuid))
+#     path = str(await database.fetch_one(query=query))
+#     path = path[2:-3]
+#     print(path)
+#     return FileResponse(path, media_type="video/mp4")
+
+
+# @app.get("/stream2")
+# async def main(uuid: str):
+#     vuuid = f'"{uuid}"'
+#     print(vuuid)
+#     query = "SELECT VideoPath FROM video WHERE uuid={}".format(str(vuuid))
+#     path = str(await database.fetch_one(query=query))
+#     path = path[2:-3]
+#     print(path)
+#     def iterfile():  # 
+#         with open(path, mode="rb") as file_like:  # 
+#             yield from file_like  # 
+
+#     return StreamingResponse(iterfile(), media_type="video/mp4")
+
+
+# @app.post("/test")
+# async def fetch_data(id: int):
+#     query = "SELECT LectureName FROM video WHERE ID={}".format(str(id))
+#     results = await database.fetch_all(query=query)
+#     return  results
+
+# from pathlib import Path
+# from fastapi import FastAPI
+# from fastapi import Request, Response
+# from fastapi import Header
+# from fastapi.templating import Jinja2Templates
+
+# app = FastAPI()
+# templates = Jinja2Templates(directory="templates")
+# CHUNK_SIZE = 1024*1024
+# video_path = Path("uploadedVideos/74f7e89d-0caf-4b0d-b32d-591d4c3bcf74.mp4")
+
+# @app.get("/video")
+# async def video_endpoint():
+#     # print(range)
+#     # print(type(range))
+#     # start, end = str(range).replace("bytes=", "").split("-")
+#     # start = int(start)
+#     # print(start)
+#     # end = int(end) if end else start + CHUNK_SIZE
+#     # print(end)
+#     start = 1024000
+#     end = 2048000
+#     with open(video_path, "rb") as video:
+#         video.seek(start)
+#         data = video.read(end - start)
+#         filesize = str(video_path.stat().st_size)
+#         headers = {
+#             'Content-Range': f'bytes {str(start)}-{str(end)}/{filesize}',
+#             'Accept-Ranges': 'bytes'
+#         }
+#         return Response(data, status_code=206, headers=headers, media_type="video/mp4")
+
 # @app.get("/get/viewed_videos")
 # async def get_viewed_videos(firstname: str):
 #     query = "SELECT * FROM video LEFT JOIN student ON (video.StudentID = student.StudentID) WHERE student.Firstname = :Firstname"
@@ -248,6 +318,7 @@ async def video_group(group: schemas.VideoGroupBase = Depends(VideoGroupBase.sen
     #     raise HTTPException(status_code=400, detail="Video already exists in database!")
     crud.video_group_assignment(db=db, group=group)
     return "Success"
+
 
 # @app.get("/get/video_permission/students")
 # async def students_in_group(GroupNumber: int):
