@@ -13,6 +13,7 @@ class Video(Base):
     LectureName = Column(String, nullable=False)
     CourseName = Column(String, nullable=False)
     LecturerID = Column(Integer, ForeignKey("lecturer.LecturerID"), nullable=False)
+    Details = Column(String, nullable=False)
 
     video_lecturer = relationship("Lecturer", foreign_keys=[LecturerID])
 
@@ -45,6 +46,7 @@ class Lecturer(Base):
     LecturerID = Column(Integer, primary_key=True)
     Firstname = Column(String, nullable=False)
     Lastname = Column(String, nullable=False)
+    Details = Column(String, nullable=False)
 
     #from https://www.codegrepper.com/code-examples/sql/uuid+sqlalcomany
 

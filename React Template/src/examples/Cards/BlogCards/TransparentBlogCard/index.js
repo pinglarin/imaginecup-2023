@@ -144,8 +144,8 @@ function TransparentBlogCard({ image, title, description, action }) {
 // Typechecking props for the TransparentBlogCard
 TransparentBlogCard.propTypes = {
   image: PropTypes.string.isRequired,
-  title: PropTypes.string.isRequired,
-  description: PropTypes.string.isRequired,
+  // title: PropTypes.string.isRequired,
+  // description: PropTypes.string.isRequired,
   action: PropTypes.shape({
     type: PropTypes.oneOf(["external", "internal"]),
     route: PropTypes.string.isRequired,

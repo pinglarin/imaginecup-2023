@@ -8,10 +8,15 @@ import "./Player/index";
 // My add function
 // import Clip from "./VideoExample/OOP P01 CanteenICT Get-Started Session (Bi-Lingual)-20210310 0659-1.mp4";
 
-const Splitpart = window.location.pathname.split("/");
-const UUID = Splitpart[2];
+// const Splitpart = window.location.href.split("/");
+// console.log("split");
+// console.log(Splitpart);
+// const UUID = Splitpart[4];
+// console.log(UUID);
 
 export default function VideoMk2() {
+  const Splitpart = window.location.pathname.split("/");
+  const UUID = Splitpart[2];
   console.log(UUID);
   console.log(`http://127.0.0.1:8000/vid?uuid=${UUID}`);
   // const Myplayer = {};
@@ -33,6 +38,7 @@ export default function VideoMk2() {
   });
 
   function onPlayerReady(player) {
+    console.log(UUID);
     console.log("Player is ready: ", player);
     // Myplayer = player;
   }

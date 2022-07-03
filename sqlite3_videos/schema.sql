@@ -7,6 +7,7 @@ CREATE TABLE video (
     LectureName TEXT NOT NULL,
     CourseName TEXT NOT NULL,
     LecturerID INT NOT NULL,
+    Details TEXT NOT NULL,
 
     FOREIGN KEY (LecturerID)
         REFERENCES lecturer (LecturerID)
@@ -73,7 +74,8 @@ DROP TABLE IF EXISTS lecturer;
 CREATE TABLE lecturer (
     LecturerID INT PRIMARY KEY,
     Firstname TEXT NOT NULL,
-    Lastname TEXT NOT NULL    
+    Lastname TEXT NOT NULL,
+    Details TEXT NOT NULL    
 );
 
 

@@ -22,6 +22,7 @@ class VideoBase(BaseModel):
     LectureName: str
     CourseName: str
     LecturerID: int
+    Details: str
     class Config:
         orm_mode = True
 
@@ -31,8 +32,9 @@ class VideoBase(BaseModel):
         LectureName: str = Form(...),
         CourseName: str = Form(...),
         LecturerID: int = Form(...),
+        Details: str = Form(...),
     ) -> Self:
-        return cls(LectureName=LectureName, CourseName=CourseName, LecturerID=LecturerID)
+        return cls(LectureName=LectureName, CourseName=CourseName, LecturerID=LecturerID, Details=Details)
 
 class VideoReturn(VideoBase):
     uuid: str
@@ -87,6 +89,7 @@ class LecturerBase(BaseModel):
     LecturerID: int
     Firstname: str
     Lastname: str
+    Details: str
     class Config:
         orm_mode = True
 
@@ -96,8 +99,9 @@ class LecturerBase(BaseModel):
         LecturerID: int = Form(...),
         Firstname: str = Form(...),
         Lastname: str = Form(...),
+        Details: str = Form(...),
     ) -> Self:
-        return cls(LecturerID=LecturerID, Firstname=Firstname, Lastname=Lastname)
+        return cls(LecturerID=LecturerID, Firstname=Firstname, Lastname=Lastname, Details=Details)
 
 
     # @classmethod

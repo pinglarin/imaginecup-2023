@@ -23,10 +23,10 @@ import HorizontalTeamCard from "examples/Cards/TeamCards/HorizontalTeamCard";
 
 function DragUploader() {
   // removed props because of 'props' is defined but never used
-
   const [LectureName, setLectureName] = useState("");
-  const [LecturerID, setLecturerID] = useState("");
   const [CourseName, setCourseName] = useState(""); // removed event because error: 'event' is defined but never used
+  const [LecturerID, setLecturerID] = useState("");
+  const [Details, setDetails] = useState("");
 
   const [ModalSuccess, openSuccess, closeSuccess] = useModal("root", {
     preventScroll: true,
@@ -44,9 +44,11 @@ function DragUploader() {
     formData.append("file", uploadfile.files[0]);
     formData.append("uuid", uuidv4());
     formData.append("LectureName", LectureName); // formData.append("lecture_name", Lecture_name);
-    formData.append("LecturerID", LecturerID); // formData.append("lecturer_ID", Lecturer_ID);
     formData.append("CourseName", CourseName); // formData.append("student_ID",Student_ID);
-    if (uploadfile.files[0] && LectureName && LecturerID && CourseName) {
+    formData.append("LecturerID", LecturerID); // formData.append("lecturer_ID", Lecturer_ID);
+    formData.append("Details", Details);
+
+    if (uploadfile.files[0] && LectureName && LecturerID && CourseName && Details) {
       axios
         .post(`http://localhost:8000/uploadvideo/`, formData, {
           headers: {
@@ -72,8 +74,9 @@ function DragUploader() {
     console.log(formData.get("file"));
     console.log(formData.get("uuid"));
     console.log(formData.get("LectureName"));
-    console.log(formData.get("LecturerID"));
     console.log(formData.get("CourseName"));
+    console.log(formData.get("LecturerID"));
+    console.log(formData.get("Details"));
   };
   return (
     <MKBox component="section" py={12}>
@@ -118,6 +121,15 @@ function DragUploader() {
                     label="Lecturer ID"
                     placeholder="Enter Lecturer ID"
                     onChange={(e) => setLecturerID(e.target.value)}
+                    fullWidth
+                  />
+                </Grid>
+                <Grid item xs={12} md={12}>
+                  <MKInput
+                    variant="standard"
+                    label="Lecture Details"
+                    placeholder="Enter Lecture Details"
+                    onChange={(e) => setDetails(e.target.value)}
                     fullWidth
                   />
                 </Grid>

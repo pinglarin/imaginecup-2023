@@ -28,6 +28,25 @@ import VideoPlayer from "./PlayerVideo_page/Player_part/VideoMk2";
 import "./PlayerVideo_page/Playvideo.css";
 
 function Upload() {
+  const Splitpart = window.location.pathname.split("/");
+  const UUID = Splitpart[2];
+  console.log(UUID);
+  console.log(`http://127.0.0.1:8000/get/lecturename?vuuid=${UUID}`);
+
+  // I DUNNO WUT TO DO
+  // const [state /* , setstate */] = useState({
+  //   video: {
+  //     sources: [
+  //       {
+  //         src: `http://127.0.0.1:8000/vid?uuid=${UUID}`,
+  //         type: "video/mp4",
+  //       },
+  //     ],
+  //     poster:
+  //       "https://cdn.discordapp.com/attachments/595430234736689173/923864093511798814/167a9d14e5017ffa2d39ac5567f37d30-db6wtbu.jpg",
+  //   },
+  // });
+
   return (
     <>
       {/* <MKBox position="fixed" top="0.5rem" width="100%"> */}
@@ -133,7 +152,7 @@ function Upload() {
           <Grid item xs={6} justifyContent="center" sx={{ mx: "auto", textAlign: "center" }}>
             <MKTypography
               variant="h5"
-              color="black"
+              color="dark"
               sx={({ breakpoints, typography: { size } }) => ({
                 [breakpoints.down("md")]: {
                   fontSize: size["2xl"],
@@ -148,7 +167,7 @@ function Upload() {
             <br />
             <MKTypography
               variant="h5"
-              color="black"
+              color="dark"
               sx={({ breakpoints, typography: { size } }) => ({
                 [breakpoints.down("md")]: {
                   fontSize: size["2xl"],
@@ -167,7 +186,7 @@ function Upload() {
           <Grid item xs={12} lg={6} justifyContent="right" sx={{ mx: "auto", textAlign: "center" }}>
             <MKTypography
               variant="h5"
-              color="black"
+              color="dark"
               sx={({ breakpoints, typography: { size } }) => ({
                 [breakpoints.down("md")]: {
                   fontSize: size["2xl"],

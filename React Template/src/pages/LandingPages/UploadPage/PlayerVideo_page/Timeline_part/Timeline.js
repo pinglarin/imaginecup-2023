@@ -19,11 +19,11 @@ export default function Timeline() {
                   </li>
                   <li className="event" data-date="20:00:00">
                     <a href="#Vid">Topic B</a>
-                    <p>Fuck you</p>
+                    <p>abcd</p>
                   </li>
                   <li className="event" data-date="30:00:00">
                     <a href="#Vid">Topic C</a>
-                    <p>FF</p>
+                    <p>abcd</p>
                   </li>
                   <li className="event" data-date="40:00:00">
                     <a href="#Vid">Topic D</a>

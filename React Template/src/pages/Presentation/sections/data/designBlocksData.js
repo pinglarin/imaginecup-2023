@@ -19,41 +19,41 @@ const imagesPrefix = "https://cdn.discordapp.com/attachments/917582730982723625"
 
 const ExportData = [
   {
-    title: "Example Course",
-    description: "Just for test all video in fastapi",
+    // title: "Example Course",
+    // description: "Just for test all video in fastapi",
     items: [
-      {
-        image: `${imagesPrefix}/983667449650114611/IMG_20181130_234218.jpg`,
-        name: "LockVideoExample",
-        count: 691140,
-        pro: true,
-      },
+      // {
+      // image: `${imagesPrefix}/983667449650114611/IMG_20181130_234218.jpg`,
+      // name: "LockVideoExample",
+      // count: 691140,
+      // pro: true,
+      // },
     ],
   },
-  {
-    title: "Navigation",
-    description: "30+ components that will help go through the pages",
-    items: [
-      {
-        image: `${imagesPrefix}/983667848545202206/FB_IMG_1558676210120.jpg`,
-        name: "Navbars",
-        count: 4,
-        route: "/sections/navigation/navbars",
-      },
-      {
-        image: `${imagesPrefix}/983667848545202206/FB_IMG_1558676210120.jpg`,
-        name: "Nav Tabs",
-        count: 2,
-        route: "/sections/navigation/nav-tabs",
-      },
-      {
-        image: `${imagesPrefix}/983667848545202206/FB_IMG_1558676210120.jpg`,
-        name: "Pagination",
-        count: 3,
-        route: "/sections/navigation/pagination",
-      },
-    ],
-  },
+  // {
+  //   title: "Navigation",
+  //   description: "30+ components that will help go through the pages",
+  //   items: [
+  //     {
+  //       image: `${imagesPrefix}/983667848545202206/FB_IMG_1558676210120.jpg`,
+  //       name: "Navbars",
+  //       count: 4,
+  //       route: "/sections/navigation/navbars",
+  //     },
+  //     {
+  //       image: `${imagesPrefix}/983667848545202206/FB_IMG_1558676210120.jpg`,
+  //       name: "Nav Tabs",
+  //       count: 2,
+  //       route: "/sections/navigation/nav-tabs",
+  //     },
+  //     {
+  //       image: `${imagesPrefix}/983667848545202206/FB_IMG_1558676210120.jpg`,
+  //       name: "Pagination",
+  //       count: 3,
+  //       route: "/sections/navigation/pagination",
+  //     },
+  //   ],
+  // },
 ];
 
 function RefreshData() {
