@@ -99,6 +99,19 @@ async def upload_video(file: UploadFile, video: schemas.VideoBase = Depends(Vide
     return "Success"
 # To be done: if function returns success, the user is notified of it, and the opposite goes for failed attempt.
 
+@app.post("/uploadvideo/youtube")
+async def upload_video(VideoName: str, VideoPath: str, video: schemas.VideoBase = Depends(VideoBase.send_form), db: Session = Depends(get_db)):
+    vuuid = str(uuid.uuid4())
+    print("uuid: ", vuuid)
+    db_vdo = crud.get_video_by_ID(db, uuid=vuuid)
+    if db_vdo:
+        raise HTTPException(status_code=400, detail="Video already exists in database!")
+    crud.create_youtube_video(db=db, video=video, uuid=vuuid, path = VideoPath, VideoName=VideoName)
+    # # not working (ignored) ??? --> commented temporarily
+    # json_ocr_output = vidOCR(VideoPath)
+    # print(json_ocr_output)
+    return "Success"
+
 @app.put("/updatevideo/{uuid}")
 async def update_item(vuuid: str, video: schemas.VideoBase = Depends(VideoBase.send_form), db: Session = Depends(get_db)):
     db_vdo = db.get(models.Video, vuuid)
@@ -147,6 +160,15 @@ async def video_endpoint(uuid: str, range: str = Header(None)):
         }
     return Response(data, status_code=206, headers=headers, media_type="video/mp4")
 
+@app.get("/youtube")
+async def video_endpoint(uuid: str):
+    vuuid = f'"{uuid}"'
+    print(vuuid)
+    query = "SELECT VideoPath FROM video WHERE uuid={}".format(str(vuuid))
+    video_path = str(await database.fetch_one(query=query))
+    video_path = video_path[2:-3]
+    print(video_path)
+    return video_path
 
 # --- POST FUNCTIONS ---
 @app.post("/signup_student")

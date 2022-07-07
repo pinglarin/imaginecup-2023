@@ -25,13 +25,22 @@ def get_video_by_ID(db: Session, uuid: str):
 def get_all_videos(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Video).offset(skip).limit(limit).all()
 
-def create_video(db: Session, video: schemas.VideoBase, file: UploadFile, uuid:str, path:str):
+def create_video(db: Session, video: schemas.VideoBase, file: UploadFile, uuid: str, path:str):
     print("in create_video")
     vdo = models.Video(uuid=uuid, VideoName=file.filename, VideoPath = path, LectureName=video.LectureName, CourseName = video.CourseName, LecturerID=video.LecturerID, Details=video.Details)
     db.add(vdo)
     db.commit()
     db.refresh(vdo)
     print("file is inside database ", file.filename)
+    print("Video is successfully uploaded")
+    return vdo
+
+def create_youtube_video(db: Session, video: schemas.VideoBase, uuid: str, path: str, VideoName: str):
+    print("in create_youtube_video")
+    vdo = models.Video(uuid=uuid, VideoName=VideoName, VideoPath = path, LectureName=video.LectureName, CourseName = video.CourseName, LecturerID=video.LecturerID, Details=video.Details)
+    db.add(vdo)
+    db.commit()
+    db.refresh(vdo)
     print("Video is successfully uploaded")
     return vdo
 

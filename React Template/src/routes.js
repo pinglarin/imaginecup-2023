@@ -50,6 +50,7 @@ import SignIn from "layouts/pages/authentication/sign-in";
 
 // Dragon's Upload page
 // import Upload from "layouts/pages/landing-pages/UploadPage";
+import Upload from "layouts/pages/landing-pages/youtube-upload";
 
 // Sections
 import PageHeaders from "layouts/sections/page-sections/page-headers";
@@ -96,11 +97,11 @@ const routes = [
             route: "/pages/landing-pages/author",
             component: <Author />,
           },
-          // {
-          //   name: "Upload",
-          //   route: "/pages/landing-pages/UploadPage",
-          //   component: <Upload />,
-          // },
+          {
+            name: "Youtube Upload",
+            route: "/pages/landing-pages/YoutubeUpload",
+            component: <Upload />,
+          },
         ],
       },
       {
